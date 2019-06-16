@@ -2,20 +2,17 @@ module.exports = {
   root: true,
 
   parserOptions: {
-    parser: 'babel-eslint',
-    sourceType: 'module'
+    parser: '@typescript-eslint/parser',
+    sourceType: 'module',
+    useJSXTextNode: true,
+    jsx: true,
   },
 
   env: {
     browser: true
   },
 
-  extends: [
-    // https://github.com/vuejs/eslint-plugin-vue#priority-a-essential-error-prevention
-    // consider switching to `plugin:vue/strongly-recommended` or `plugin:vue/recommended` for stricter rules.
-    'plugin:vue/essential',
-    '@vue/standard'
-  ],
+  extends: ['eslint:recommended', 'plugin:vue/recommended', 'plugin:import/warnings'],
 
   // required to lint *.vue files
   plugins: ['vue'],

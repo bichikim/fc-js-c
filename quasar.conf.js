@@ -1,10 +1,13 @@
+/* eslint-disable no-undef,no-unused-vars */
 // Configuration for your app
+const { resolve } = require('path')
 
-module.exports = function(ctx) {
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
+module.exports = function (ctx) {
   return {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
-    boot: ['i18n', 'axios'],
+    boot: ['i18n', 'axios', 'highlight'],
 
     css: ['app.styl'],
 
@@ -55,6 +58,7 @@ module.exports = function(ctx) {
       // analyze: true,
       // extractCSS: false,
       extendWebpack(cfg) {
+        cfg.resolve.alias['@'] = resolve('src')
         cfg.module.rules.push({
           enforce: 'pre',
           test: /\.(js|vue)$/,
@@ -75,6 +79,25 @@ module.exports = function(ctx) {
             }
           ]
         })
+        cfg.module.rules.push(      {
+          test: /\.tsx?$/,
+          exclude: [/node_modules/],
+          use: [
+            {
+              loader: 'babel-loader',
+            },
+            {
+              loader: 'ts-loader',
+              options: {
+                appendTsSuffixTo: [/\.vue$/],
+                transpileOnly: true,
+              },
+            },
+          ],
+        },)
+        cfg.plugins.push(new ForkTsCheckerWebpackPlugin({
+          vue: true,
+        }))
       }
     },
 

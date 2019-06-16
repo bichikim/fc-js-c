@@ -9,7 +9,7 @@
       q-list
         q-expansion-item(icon="ion-snow" label="변수" :contentInsetLevel="contentInsetLevel")
           q-list
-            q-item(clickable)
+            q-item(to="/variable/how-to-save")
               q-item-section(avatar)
                 q-icon(name="ion-snow")
               q-item-section 어떻게 메모리에 저장 할까?
@@ -17,6 +17,8 @@
               q-item-section(avatar)
                 q-icon(name="ion-snow")
               q-item-section 변하는 값 변하지 않는 값
+    q-page-container
+      router-view
 </template>
 <script>
 import { openURL } from 'quasar'
