@@ -1,26 +1,40 @@
 <template lang="pug">
-  q-btn-dropdown(no-caps v-bind="$attrs" :label="label")
+  q-btn-dropdown(no-caps v-bind="$attrs" :label="nativeValue")
     q-list
-      q-item(clickable v-for="(item, index) in list" @click="listIndex = index")
+      q-item(
+        @click="handelClick(item)"
+        clickable
+        v-close-popup
+        v-for="item in list"
+        :key="item"
+      )
         q-item-section
           q-item-label {{item}}
 </template>
 
 <script lang="ts">
-import {
-  Component, Prop, Vue,
-} from 'vue-property-decorator'
+  import {
+    Component, Prop, Vue, Watch,
+  } from 'vue-property-decorator'
 
-@Component
-export default class QBtnChange extends Vue {
-  @Prop({default: () => ([])}) list: string[]
+  @Component
+  export default class QBtnChange extends Vue {
+    @Prop({default: () => ([])}) list: string[]
+    @Prop() value: string
 
-  listIndex: number = 0
+    @Watch('value', {immediate: true})
+    watchValue(value) {
+      this.nativeValue = value
+    }
 
-  get label() {
-    return this.list[this.listIndex]
+    nativeValue: string = ''
+
+    handelClick(value) {
+      this.nativeValue = value
+      this.$emit('input', value)
+    }
+
   }
-}
 </script>
 
 <style scoped lang="stylus">

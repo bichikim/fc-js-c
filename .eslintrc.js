@@ -23,6 +23,54 @@ module.exports = {
     __statics: true,
     process: true
   },
+  overrides: [
+    {
+      files: ['*.js'],
+      rules: {
+        'indent': 'off',
+      },
+    },
+    {
+      files: ['*.ts', '*.vue', '*.tsx'],
+      rules: {
+        'indent': 'off',
+        'new-cap': 'off',
+        'no-undef': 'off',
+        'no-undefined': 'off',
+        'no-unused-vars': 'off',
+        'no-dupe-class-members': 'off',
+        'no-magic-numbers': 'off',
+      },
+    },
+    {
+      files: ['*.vue'],
+      rules: {
+        'max-len': 'off',
+      },
+    },
+    {
+      files: ['*.d.ts'],
+      rules: {
+        'import/no-duplicates': 'off',
+        'typescript/interface-name-prefix': 'off',
+        'typescript/no-namespace': 'off',
+        'no-magic-numbers': 'off',
+      },
+    },
+    {
+      files: [
+        '*.spec.js',
+        '*.spec.ts',
+        '*.test.ts',
+        '*.test.js',
+      ],
+      rules: {
+        'no-magic-numbers': 'off',
+        'max-nested-callbacks': 'off',
+        'no-undef': 'off',
+      },
+    },
+  ],
 
   // add your custom rules here
   rules: {

@@ -6,37 +6,35 @@
       )
       h3.text-white.banner
         slot(name="title") unknown
-    q-separator
-    q-card-section
+    q-separator(v-if="$slots.default")
+    q-card-section(v-if="$slots.default")
       .text-subtitle1.text-grey-8 구문
       .text-h5
         slot
+    q-separator(v-if="$slots.code")
+    q-card-section(v-if="$slots.code")
+      .text-subtitle1.text-grey-8 코드
+      prism-editor(
+        :code="code.text"
+        :key="index"
+        :value="code.text"
+        language="js"
+        readonly
+        v-for="(code, index) in $slots.code"
+        )
     q-separator
-    q-card-section
+    q-card-section(v-if="$slots.explanation")
       .text-subtitle1.text-grey-8 설명
       slot(name="explanation")
 </template>
 
 <script lang="ts">
   import {
-    Component, Vue,
+    Component, Vue, Watch
   } from 'vue-property-decorator'
-  import hljs from 'highlight.js/lib/highlight'
 
   @Component
   export default class QCourse extends Vue {
-    mounted(){
-      this.highlightBlock()
-    }
-    updated(){
-      this.highlightBlock()
-    }
-
-    highlightBlock(){
-      this.$el.querySelectorAll('code.javascript').forEach((block) => {
-        hljs.highlightBlock(block)
-      })
-    }
   }
 </script>
 

@@ -1,6 +1,6 @@
-import hljs from 'highlight.js/lib/highlight'
-import javascript from 'highlight.js/lib/languages/javascript'
-import 'highlight.js/styles/github.css';
-export default async () => {
-  hljs.registerLanguage('javascript', javascript)
+import "prismjs"
+import 'prismjs/themes/prism-okaidia.css'
+import VuePrismEditor from "vue-prism-editor"
+export default async ({Vue}) => {
+  Vue.component("prism-editor", VuePrismEditor)
 }

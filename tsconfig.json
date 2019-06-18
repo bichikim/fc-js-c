@@ -16,8 +16,7 @@
       "@/*": ["src/*"],
       "~/*": ["src/*"],
       "@@/*": ["*"],
-      "~~/*": ["*"],
-      "types/*": ["src/types/*"]
+      "~~/*": ["*"]
     },
     "allowJs": true,
     // build environment
@@ -26,10 +25,6 @@
     "moduleResolution": "node",
     "sourceMap": true,
     "removeComments": false,
-    "typeRoots": [
-      "node_modules/@types",
-      "types"
-    ],
     // decorators
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
@@ -46,11 +41,8 @@
   "include": [
     "**/*.ts",
     "**/*.tsx",
-    "**/*.vue",
-    "types/**/*.d.ts"
+    "**/*.vue"
   ],
   "exclude": [
-    "lib/**/*",
-    "project/**/*"
   ]
 }
