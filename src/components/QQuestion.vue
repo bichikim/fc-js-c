@@ -2,17 +2,17 @@
   q-card
     q-card-section
       .text-subtitle1.text-grey-8 문제
-      .text-h5
+      .text-h6.q-pa-md
         slot(name="title") unknown
     q-separator(v-if="$slots['explanation']")
     q-card-section(v-if="$slots['explanation']")
       .text-subtitle1.text-grey-8 의미
-      q-markdown.text-h5
+      q-markdown.text-h6.q-pa-md
         slot(name="explanation")
     q-card-section
       .text-subtitle1.text-grey-8 코드
       .code-section
-        prism-editor(v-model="code" :code="code" language="js")
+        prism-editor.text-h6(v-model="code" :code="code" language="js")
     q-separator
 </template>
 

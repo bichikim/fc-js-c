@@ -4,8 +4,8 @@
       q-input(
         dense
         autofocus
-        :value="nativeValue"
-        @input="handleInput"
+        v-model="nativeValue"
+        @change="handleInput"
         @keyup.enter="handleEnter"
       )
 </template>
@@ -23,14 +23,16 @@ export default class QBtnInput extends Vue {
   showPopup: boolean = false
 
   @Watch('value', {immediate: true})
-  watchValue(value) {
-    this.nativeValue = value
+  watchValue(value, oldValue) {
+    if(value !== oldValue){
+      this.nativeValue = value
+    }
   }
 
   nativeValue: string = ''
 
   handleInput(value) {
-    this.$emit('input', value)
+    this.$emit('input', this.nativeValue)
   }
 
   handleEnter(){

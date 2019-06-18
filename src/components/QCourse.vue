@@ -9,12 +9,12 @@
     q-separator(v-if="$slots.default")
     q-card-section(v-if="$slots.default")
       .text-subtitle1.text-grey-8 구문
-      .text-h5
+      .text-h6.q-pa-md
         slot
     q-separator(v-if="$slots.code")
     q-card-section(v-if="$slots.code")
       .text-subtitle1.text-grey-8 코드
-      prism-editor(
+      prism-editor.text-h6(
         :code="code.text"
         :key="index"
         :value="code.text"
@@ -22,10 +22,16 @@
         readonly
         v-for="(code, index) in $slots.code"
         )
-    q-separator
+    q-separator(v-if="$slots.explanation")
     q-card-section(v-if="$slots.explanation")
-      .text-subtitle1.text-grey-8 설명
-      slot(name="explanation")
+      .text-subtitle1.text-grey-8 의미
+      .text-h6.q-pa-md
+        slot(name="explanation")
+    q-separator(v-if="$slots.reference")
+    q-card-section(v-if="$slots.reference")
+      .text-subtitle1.text-grey-8 참고
+      .text-h6.q-pa-md
+        slot(name="reference")
 </template>
 
 <script lang="ts">
