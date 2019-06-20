@@ -1,8 +1,8 @@
 <template lang="pug">
   q-page.q-gutter-y-md(padding)
     q-course
-      .unit(slot="unit") 변수
-      .title(slot="title") 어떻게 메모리에 저장 할까?
+      template(slot="unit") 변수
+      template(slot="title") 어떻게 메모리에 저장 할까?
       .q-gutter-x-md
         q-btn-change(push :list="['let', 'const']" color="blue" v-model="variableType")
         q-btn-input(push color="cyan" v-model="variableName")

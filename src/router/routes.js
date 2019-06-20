@@ -6,9 +6,25 @@ const routes = [
     children: [
       { path: '', component: () => import('pages/Index.vue') },
       {
-        path: 'variable/how-to-save',
-        component: () => import('pages/variable/how-to-save'),
-      }
+        path: 'variable/variable',
+        component: () => import('pages/variable/variable'),
+      },
+      {
+        path: 'variable/calculate',
+        component: () => import('pages/variable/calculate'),
+      },
+      {
+        path: 'variable/type',
+        component: () => import('pages/variable/type'),
+      },
+      {
+        path: 'flow/if',
+        component: () => import('pages/flow/if'),
+      },
+      {
+        path: 'flow/loop',
+        component: () => import('pages/flow/loop'),
+      },
     ]
   }
 ]
