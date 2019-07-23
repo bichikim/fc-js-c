@@ -1,5 +1,10 @@
 <template lang="pug">
-  q-btn-dropdown(no-caps v-bind="$attrs" :label="nativeValue")
+  q-btn-dropdown(
+      no-caps
+      v-bind="$attrs"
+      :label="nativeValue"
+      :color="color"
+    )
     q-list
       q-item(
         @click="handelClick(item)"
@@ -21,6 +26,7 @@
   export default class QBtnChange extends Vue {
     @Prop({default: () => ([])}) list: string[]
     @Prop() value: string
+    @Prop({default: 'blue'}) color: string
 
     @Watch('value', {immediate: true})
     watchValue(value) {

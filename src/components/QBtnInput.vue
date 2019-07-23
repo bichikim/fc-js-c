@@ -1,5 +1,10 @@
 <template lang="pug">
-  q-btn(no-caps v-bind="$attrs" :label="nativeValue")
+  q-btn(
+    no-caps
+    v-bind="$attrs"
+    :label="nativeValue | stringValue"
+    :color="color"
+  )
     q-popup-proxy(v-model="showPopup")
       q-input(
         dense
@@ -16,23 +21,50 @@ import {
 } from 'vue-property-decorator'
 import Vue from 'vue'
 
-@Component
+@Component({
+  filters: {
+    stringValue(value) {
+      const type = typeof value
+      if(type === 'boolean'){
+        return  value ? 'true' : 'false'
+      }
+      return value
+    }
+  }
+})
 export default class QBtnInput extends Vue {
-  @Prop() value
+  @Prop() value: any
+  @Prop({default: 'green'}) color: string
+  @Prop({default: true}) transformValue: boolean
 
   showPopup: boolean = false
 
   @Watch('value', {immediate: true})
-  watchValue(value, oldValue) {
-    if(value !== oldValue){
-      this.nativeValue = value
-    }
+  watchValue(value) {
+    this.nativeValue = value
   }
 
-  nativeValue: string = ''
+  nativeValue: any = ''
+
+  get emitValue() {
+    const {nativeValue} = this
+    if(this.transformValue){
+      const mayNumber = Number(nativeValue)
+      if(!isNaN(mayNumber)) {
+        return mayNumber
+      }
+      if(nativeValue === 'true'){
+        return true
+      }
+      if(nativeValue === 'false'){
+        return false
+      }
+    }
+    return nativeValue
+  }
 
   handleInput(value) {
-    this.$emit('input', this.nativeValue)
+    this.$emit('input', this.emitValue)
   }
 
   handleEnter(){

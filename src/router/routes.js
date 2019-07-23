@@ -26,6 +26,16 @@ const routes = [
         component: () => import('pages/flow/loop'),
       },
     ]
+  },
+  {
+    path: '/tests',
+    component: () => import('layouts/TestLayout.vue'),
+    children: [
+      {
+        path: 'line-variable',
+        component: () => import('pages/tests/LineVariable.vue')
+      }
+    ]
   }
 ]
 
