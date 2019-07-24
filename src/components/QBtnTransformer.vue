@@ -1,0 +1,39 @@
+<template lang="pug">
+  q-btn-group(:push="push")
+    slot(:name="select" :push="push" :color="color")
+      q-btn-input(:push="push" :color="color")
+    q-btn(:push="push" dense @click="open = !open" :color="color")
+      q-icon.transition(name="arrow_drop_down" :class="{open}")
+      q-menu(v-model="open" no-parent-event)
+        q-list
+          q-item(v-for="item in list" v-close-popup clickable @click="select = item")
+            q-item-section
+              q-item-label {{item}}
+</template>
+
+<script lang="ts">
+import {
+  Component, Prop, Vue,
+} from 'vue-property-decorator'
+import QBtnInput from '@/components/QBtnInput.vue'
+@Component({
+  components: { QBtnInput }
+})
+export default class QBtnTransformer extends Vue {
+  @Prop({default: true}) push: boolean
+  @Prop({default: () => ([])}) list: string[]
+  @Prop({default: 'grey'}) color: string
+
+  open: boolean = false
+
+  select: string = 'default'
+}
+</script>
+
+<style scoped lang="stylus">
+  .open
+    transform rotate(180deg)
+  .transition
+    transition-property transform
+    transition-duration .3s
+</style>

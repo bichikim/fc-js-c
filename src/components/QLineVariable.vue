@@ -1,6 +1,8 @@
 <template lang="pug">
-  .q-gutter-x-md
-    q-btn-change(
+  .main.q-btn-item(
+    :class="{[`bg-${backgroundColor}`]: true, 'q-btn--push': backgroundPush}"
+    )
+    q-btn-change.pad(
       v-if="nativeKind !== ''"
       :push="push"
       :color="kindColor"
@@ -8,11 +10,25 @@
       v-model="nativeKind"
       @input="handleChange"
       )
-    q-btn-input(:push="push" :color="nameColor" v-model="nativeName")
-    q-btn-change(:push="push" :color="operatorColor" :list="operatorList" v-model="nativeOperator")
-    slot
-      q-btn-input(:push="push" :color="nativeValueColor" v-model="nativeValue")
+    q-btn-input.pad(:push="push" :color="nameColor" v-model="nativeName")
+    q-btn-change.pad(:push="push" :color="operatorColor" :list="operatorList" v-model="nativeOperator")
+    q-btn-input.pad(:push="push" :color="nativeValueColor" v-model="nativeValue")
 </template>
+
+
+<style scoped lang="stylus">
+  .main
+    position relative
+    box-sizing border-box
+  .push
+    border-radius 7px
+  .pad:first-child
+    margin-left $flex-gutter-sm
+  .pad:not(:last-child)
+    margin-right $flex-gutter-md
+  .pad:last-child
+    margin-right $flex-gutter-sm
+</style>
 
 <script lang="ts">
 import {
@@ -52,6 +68,8 @@ export default class QLineVariable extends Vue {
   @Prop({default: 'green'}) valueStringColor: string
   @Prop({default: 'red'}) valueNumberColor: string
   @Prop({default: 'blue'}) valueBooleanColor: string
+  @Prop({default: 'white'}) backgroundColor: string
+  @Prop({default: false}) backgroundPush: boolean
 
   @Watch('kind', {immediate: true})
   __kind(value) {
@@ -176,7 +194,3 @@ export default class QLineVariable extends Vue {
 }
 </script>
 
-<style scoped lang="stylus">
-  .main
-    display flex
-</style>

@@ -2,6 +2,7 @@
   q-btn(
     no-caps
     v-bind="$attrs"
+    :push="push"
     :label="nativeValue | stringValue"
     :color="color"
   )
@@ -35,7 +36,8 @@ import Vue from 'vue'
 export default class QBtnInput extends Vue {
   @Prop() value: any
   @Prop({default: 'green'}) color: string
-  @Prop({default: true}) transformValue: boolean
+  @Prop({default: true}) transformEmit: boolean
+  @Prop() push: boolean
 
   showPopup: boolean = false
 
@@ -48,7 +50,7 @@ export default class QBtnInput extends Vue {
 
   get emitValue() {
     const {nativeValue} = this
-    if(this.transformValue){
+    if(this.transformEmit){
       const mayNumber = Number(nativeValue)
       if(!isNaN(mayNumber)) {
         return mayNumber
