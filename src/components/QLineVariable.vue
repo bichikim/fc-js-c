@@ -8,11 +8,15 @@
       :color="kindColor"
       :list="kindList"
       v-model="nativeKind"
-      @input="handleChange"
       )
     q-btn-input.pad(:push="push" :color="nameColor" v-model="nativeName")
     q-btn-change.pad(:push="push" :color="operatorColor" :list="operatorList" v-model="nativeOperator")
-    q-btn-input.pad(:push="push" :color="nativeValueColor" v-model="nativeValue")
+    q-btn-value.pad(
+      :push="push"
+    v-bind="{valueStringColor, valueNumberColor, valueKeyColor}"
+      v-model="nativeValue"
+      @change-code="handleValueChange"
+      )
 </template>
 
 
@@ -36,6 +40,7 @@ import {
 } from 'vue-property-decorator'
 import QBtnChange from '@/components/QBtnChange.vue'
 import QBtnInput from '@/components/QBtnInput.vue'
+import QBtnValue from '@/components/QBtnValue.vue'
 import {CodeStyle} from './types'
 import {isNaN} from 'lodash'
 
@@ -53,7 +58,7 @@ interface LineData {
 }
 
 @Component({
-  components: { QBtnChange, QBtnInput}
+  components: { QBtnChange, QBtnInput, QBtnValue}
 })
 export default class QLineVariable extends Vue {
   @Prop({default: 'const'}) kind: VariableKind
@@ -67,7 +72,7 @@ export default class QLineVariable extends Vue {
   @Prop({default: 'amber'}) operatorColor: string
   @Prop({default: 'green'}) valueStringColor: string
   @Prop({default: 'red'}) valueNumberColor: string
-  @Prop({default: 'blue'}) valueBooleanColor: string
+  @Prop({default: 'blue'}) valueKeyColor: string
   @Prop({default: 'white'}) backgroundColor: string
   @Prop({default: false}) backgroundPush: boolean
 
@@ -91,8 +96,9 @@ export default class QLineVariable extends Vue {
     this.nativeValue = value
   }
 
-  mounted() {
-    this.handleChange()
+  @Watch('codify', {immediate: true})
+  __codify(value){
+    this.$emit('change-code', value)
   }
 
 
@@ -100,6 +106,7 @@ export default class QLineVariable extends Vue {
   nativeKind: VariableKind = 'const'
   nativeName: string = 'foo'
   nativeOperator: Operator = '='
+  codeValue: CodeStyle | null = null
 
   // noinspection JSMethodCanBeStatic
   get kindList(): VariableKind[] {
@@ -111,21 +118,6 @@ export default class QLineVariable extends Vue {
     return ['=', '=%', '=*', '=+', '=-', '=/']
   }
 
-  get nativeValueColor() {
-    switch(this.valueKind){
-      case 'string':
-        return this.valueStringColor
-      case 'number':
-        return this.valueNumberColor
-      case 'boolean':
-        return this.valueBooleanColor
-    }
-    return this.valueStringColor
-  }
-
-  get valueKind() {
-    return typeof this.nativeValue
-  }
 
   get resultValue() {
     const {nativeOperator, previousLines, nativeName} = this
@@ -163,7 +155,7 @@ export default class QLineVariable extends Vue {
     const result: CodeStyle[] = []
     const {
       nativeKind, kindColor, nameColor, nativeName, nativeValue,
-      nativeOperator, operatorColor, nativeValueColor,
+      nativeOperator, operatorColor, codeValue, valueStringColor,
     } = this
     if(nativeKind !== ''){
       result.push({
@@ -179,17 +171,20 @@ export default class QLineVariable extends Vue {
       color: operatorColor,
       value: nativeOperator,
     })
-    result.push({
-      color: nativeValueColor,
-      value: String(nativeValue),
-    })
+    if(codeValue){
+      result.push(codeValue)
+    } else {
+      result.push({
+        color: valueStringColor,
+        value: String(nativeValue),
+      })
+    }
+
     return result
   }
 
-
-  handleChange() {
-    this.$emit('change', this.lineData)
-    this.$emit('change-code', this.codify)
+  handleValueChange(payload){
+    this.codeValue = payload
   }
 }
 </script>

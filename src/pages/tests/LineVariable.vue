@@ -1,6 +1,10 @@
 <template lang="pug">
   div.q-pa-md
-    q-line-variable(:previousLines="{foo: {freeze: false, value: 'preBar'}}" @change-code="updateCodeItem(1, $event)")
+    q-line-variable(
+      :previousLines="{foo: {freeze: false, value: 'preBar'}}"
+      :value="5"
+      @change-code="updateCodeItem(1, $event)"
+      )
     q-code-line(:codes="codes[1]")
     q-line-variable(:previousLines="{foo: {freeze: false, value: 'preBar'}}" :kind="''")
     q-btn-transformer(:list="['value', 'calculation']")
