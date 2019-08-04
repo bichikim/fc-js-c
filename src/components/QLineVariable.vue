@@ -1,5 +1,5 @@
 <template lang="pug">
-  .main.q-btn-item(
+  .q-line-variable.q-btn-item(
     :class="{[`bg-${backgroundColor}`]: true, 'q-btn--push': backgroundPush}"
     )
     q-btn-change.pad(
@@ -11,27 +11,30 @@
       )
     q-btn-input.pad(:push="push" :color="nameColor" v-model="nativeName")
     q-btn-change.pad(:push="push" :color="operatorColor" :list="operatorList" v-model="nativeOperator")
-    q-btn-value.pad(
-      :push="push"
-    v-bind="{valueStringColor, valueNumberColor, valueKeyColor}"
-      v-model="nativeValue"
-      @change-code="handleValueChange"
-      )
+    q-btn-transformer(:list="['value', 'calculation']" defaultSelect="value")
+      template(#value="{color, push}")
+        q-btn-value.pad(
+          :push="push"
+          v-bind="{valueStringColor, valueNumberColor, valueKeyColor, backgroundColor: color, backgroundPush: push}"
+          v-model="nativeValue"
+          @change-code="handleValueChange"
+          )
 </template>
 
 
 <style scoped lang="stylus">
-  .main
+  .q-line-variable
     position relative
     box-sizing border-box
   .push
     border-radius 7px
   .pad:first-child
-    margin-left $flex-gutter-sm
-  .pad:not(:last-child)
-    margin-right $flex-gutter-md
+    margin-left 0
   .pad:last-child
-    margin-right $flex-gutter-sm
+    margin-right 0
+  .pad
+    margin-right $flex-gutter-md
+
 </style>
 
 <script lang="ts">
@@ -43,6 +46,7 @@ import QBtnInput from '@/components/QBtnInput.vue'
 import QBtnValue from '@/components/QBtnValue.vue'
 import {CodeStyle} from './types'
 import {isNaN} from 'lodash'
+import QBtnTransformer from '@/components/QBtnTransformer.vue'
 
 type VariableKind = 'const' | 'let' | ''
 type Operator = '=' | '=+' | '=*' | '=/' | '=%' | '=-'
@@ -58,7 +62,7 @@ interface LineData {
 }
 
 @Component({
-  components: { QBtnChange, QBtnInput, QBtnValue}
+  components: {QBtnTransformer, QBtnChange, QBtnInput, QBtnValue}
 })
 export default class QLineVariable extends Vue {
   @Prop({default: 'const'}) kind: VariableKind
@@ -106,7 +110,7 @@ export default class QLineVariable extends Vue {
   nativeKind: VariableKind = 'const'
   nativeName: string = 'foo'
   nativeOperator: Operator = '='
-  codeValue: CodeStyle | null = null
+  codeValue: CodeStyle[] | null = null
 
   // noinspection JSMethodCanBeStatic
   get kindList(): VariableKind[] {
@@ -172,12 +176,7 @@ export default class QLineVariable extends Vue {
       value: nativeOperator,
     })
     if(codeValue){
-      result.push(codeValue)
-    } else {
-      result.push({
-        color: valueStringColor,
-        value: String(nativeValue),
-      })
+      result.push(...codeValue)
     }
 
     return result

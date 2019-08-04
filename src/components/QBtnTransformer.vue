@@ -1,7 +1,8 @@
 <template lang="pug">
-  q-btn-group(:push="push")
-    slot(:name="select" :push="push" :color="color")
-      q-btn-input(:push="push" :color="color")
+  q-btn-group(:push="push" :class="{[`bg-${color}`]: true}")
+    .content
+      slot(:name="select" :push="push" :color="color")
+        q-btn-input(:push="push" :color="color")
     q-btn(:push="push" dense @click="open = !open" :color="color")
       q-icon.transition(name="arrow_drop_down" :class="{open}")
       q-menu(v-model="open" no-parent-event)
@@ -13,7 +14,7 @@
 
 <script lang="ts">
 import {
-  Component, Prop, Vue,
+  Component, Prop, Vue, Watch,
 } from 'vue-property-decorator'
 import QBtnInput from '@/components/QBtnInput.vue'
 @Component({
@@ -23,10 +24,16 @@ export default class QBtnTransformer extends Vue {
   @Prop({default: true}) push: boolean
   @Prop({default: () => ([])}) list: string[]
   @Prop({default: 'grey'}) color: string
+  @Prop({default: 'default'}) select: string
+
+  @Watch('select')
+  __select(value) {
+    this.nativeSelect = value
+  }
 
   open: boolean = false
 
-  select: string = 'default'
+  nativeSelect: string = 'default'
 }
 </script>
 
