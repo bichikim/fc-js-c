@@ -1,8 +1,23 @@
 <template lang="pug">
   .div
-    q-btn.bg-white(dense v-if="valueKind === 'string'" :push="push" :label="stringQuotation")
-    q-btn-input(:push="push" :color="nativeValueColor" :value="nativeValue" @input="handleInput")
-    q-btn.bg-white(dense v-if="valueKind === 'string'" :push="push" :label="stringQuotation")
+    q-btn.bg-white(
+      :label="stringQuotation"
+      :push="push"
+      dense
+      v-if="valueKind === 'string'"
+    )
+    q-btn-input(
+      :color="nativeValueColor"
+      :push="push"
+      :value="nativeValue"
+      @input="handleInput"
+    )
+    q-btn.bg-white(
+      :label="stringQuotation"
+      :push="push"
+      dense
+      v-if="valueKind === 'string'"
+    )
 </template>
 
 <script lang="ts">
@@ -18,14 +33,15 @@
   })
   export default class QBtnValue extends Vue {
     @Prop() value: any
-    @Prop() backgroundColor: string
-    @Prop() backgroundPush: string
+    @Prop({default: true}) push: boolean
     @Prop({default: 'green'}) valueStringColor: string
     @Prop({default: 'red'}) valueNumberColor: string
     @Prop({default: 'blue'}) valueKeyColor: string
     @Prop({default: 'black'}) stringQuotationColor: string
     @Prop({default: '"'}) stringQuotation: '"' | '\''
-    @Prop({default: true}) push: boolean
+    @Prop() backgroundColor: string
+    @Prop() backgroundPush: string
+
 
     nativeValue: string | number | null = 'bar'
 
@@ -34,11 +50,37 @@
       this.nativeValue = value
     }
 
-    @Watch('codify', {immediate: true})
-    __checkChange(value) {
-      this.$emit('change-code', value)
+    @Watch('nativeValue', {immediate: true})
+    __nativeValue(nativeValue) {
+      if(nativeValue !== this.value) {
+        this.$emit('input', nativeValue)
+      }
     }
 
+    @Watch('codify', {immediate: true})
+    __codify(value) {
+      this.$emit('codify', value)
+    }
+
+    @Watch('result', {immediate: true})
+    __result(value) {
+      this.$emit('result', this.result)
+    }
+
+    get result() {
+      switch(this.nativeValue){
+        case 'true':
+          return true
+        case 'false':
+          return false
+        case 'null':
+          return null
+        case 'undefined':
+          return undefined
+        default:
+          return this.nativeValue
+      }
+    }
 
 
     get codify() {
@@ -47,13 +89,13 @@
       result.push(
         {
           color: this.nativeValueColor,
-          value: String(this.nativeValue),
+          value: String(this.nativeValue)
         }
       )
       if(valueKind === 'string'){
         const quotation = {
           color: stringQuotationColor,
-          value: stringQuotation,
+          value: stringQuotation
         }
         result.push(quotation)
         result.unshift(quotation)
@@ -71,35 +113,26 @@
           return this.valueKeyColor
         case 'null':
           return this.valueKeyColor
-      }
-      return this.valueStringColor
-    }
-
-    static transformKind(value) {
-      switch(value){
-        case 'true':
-          return true
-        case 'false':
-          return false
-        case 'null':
-          return null
         case 'undefined':
-          return undefined
+          return this.valueKeyColor
         default:
-          return value
+          return this.valueStringColor
       }
+
     }
 
     get valueKind() {
-      if(this.nativeValue === null){
+      if(this.result === null){
         return 'null'
+      }
+      if(this.result === undefined){
+        return 'undefined'
       }
       return typeof this.nativeValue
     }
 
     handleInput(value) {
-      this.nativeValue = QBtnValue.transformKind(value)
-      this.$emit('input', this.nativeValue)
+      this.nativeValue = value
     }
 
   }

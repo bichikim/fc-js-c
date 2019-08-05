@@ -1,12 +1,28 @@
 <template lang="pug">
   div.q-pa-md
     q-line-variable(
-      :previousLines="{foo: {freeze: false, value: 'preBar'}}"
-      :value="5"
-      @change-code="updateCodeItem(1, $event)"
+      :previousMemories="{}"
+      @codify="updateCodeItem(0, $event)"
+      @memories="updateMemories(0, $event)"
+      )
+    q-code-line(:codes="codes[0]")
+    div {{getLineMemory(0)}}
+    q-line-variable(
+      :previousMemories="getLineMemory(0)"
+      :kind="''"
+      @codify="updateCodeItem(1, $event)"
+      @memories="updateMemories(1, $event)"
       )
     q-code-line(:codes="codes[1]")
-    q-line-variable(:previousLines="{foo: {freeze: false, value: 'preBar'}}" :kind="''")
+    div {{getLineMemory(1)}}
+    q-line-variable(
+      :previousMemories="getLineMemory(1)"
+      :kind="''"
+      @codify="updateCodeItem(2, $event)"
+      @memories="updateMemories(2, $event)"
+      )
+    q-code-line(:codes="codes[2]")
+    div {{getLineMemory(2)}}
     q-btn-transformer(:list="['value', 'calculation']")
       template(#value="{color, push}")
         q-btn-input(:color="color" :push="push")
@@ -19,19 +35,35 @@ import {
   Component, Prop, Vue,
 } from 'vue-property-decorator'
 import QLineVariable from '@/components/QLineVariable.vue'
-import {CodeStyle} from '@/components/types'
+import {CodeStyle, Memories} from '@/components/types'
 import QCodeLine from '@/components/QCodeLine.vue'
 import QBtnTransformer from '@/components/QBtnTransformer.vue'
 import QBtnInput from '@/components/QBtnInput.vue'
+import uuid from 'uuid/v4'
+import QNothing from '@/components/QNothing.vue'
 @Component({
-  components: { QBtnInput, QBtnTransformer, QCodeLine, QLineVariable }
+  components: {QNothing, QBtnInput, QBtnTransformer, QCodeLine, QLineVariable }
 })
 export default class LineVariablePage extends Vue {
   codes: CodeStyle[] = []
+  timeLines: Memories[] = []
+  update: string = 'init'
+
+  getLineMemory(index) {
+    const result = {}
+    for(let i = 0; i <= index; i++){
+      Object.assign(result, this.timeLines[i])
+    }
+    return result
+  }
 
   updateCodeItem(index, code){
     this.codes[index] = code
     this.codes = [...this.codes]
+  }
+
+  updateMemories(index, lines) {
+    this.timeLines[index] = lines
   }
 }
 </script>

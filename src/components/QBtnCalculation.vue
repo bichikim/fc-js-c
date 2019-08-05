@@ -7,7 +7,7 @@
 
 <script lang="ts">
 import {
-  Component, Prop, Vue,
+  Component, Prop, Vue, Watch
 } from 'vue-property-decorator'
 
 
@@ -15,7 +15,12 @@ import {
 
 @Component
 export default class QBtnCalculation extends Vue {
-  @Prop() value: any[]
+  @Prop() value: string
+
+  @Watch('value')
+  __value() {
+
+  }
 }
 </script>
 

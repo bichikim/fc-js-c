@@ -3,7 +3,7 @@
     span(
       v-for="(code, index) in codes"
       :class="{[`text-${code.color}`]: true}"
-      :key="code.value"
+      :key="code.value + index"
       ) {{code.value + ((codes.length - 1) === index ? '' : ' ')}}
 
 </template>

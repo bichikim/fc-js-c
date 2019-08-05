@@ -59,6 +59,9 @@ module.exports = function (ctx) {
       // extractCSS: false,
       extendWebpack(cfg) {
         cfg.resolve.alias['@'] = resolve('src')
+        cfg.resolve.extensions.push(...[
+          '.ts', '.tsx',
+        ])
         cfg.module.rules.push({
           enforce: 'pre',
           test: /\.(js|vue)$/,

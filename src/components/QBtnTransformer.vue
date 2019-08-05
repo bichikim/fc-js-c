@@ -2,7 +2,7 @@
   q-btn-group(:push="push" :class="{[`bg-${color}`]: true}")
     .content
       slot(:name="select" :push="push" :color="color")
-        q-btn-input(:push="push" :color="color")
+        span There's not a slot
     q-btn(:push="push" dense @click="open = !open" :color="color")
       q-icon.transition(name="arrow_drop_down" :class="{open}")
       q-menu(v-model="open" no-parent-event)
