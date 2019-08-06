@@ -1,20 +1,21 @@
 <template lang="pug">
   q-btn-dropdown(
+      :color="color"
+      :label="nativeValue"
       no-caps
       v-bind="$attrs"
-      :label="nativeValue"
-      :color="color"
     )
     q-list
-      q-item(
-        @click="handelClick(item)"
-        clickable
-        v-close-popup
-        v-for="item in list"
-        :key="item"
-      )
-        q-item-section
-          q-item-label {{item}}
+      template(v-for="item in list")
+        slot(name="item" v-bind="bindItem(item)")
+          q-item(
+            :key="item"
+            @click="onClick(item)"
+            clickable
+            v-close-popup
+          )
+            q-item-section
+              q-item-label {{item}}
 </template>
 
 <script lang="ts">
@@ -28,14 +29,19 @@
     @Prop() value: string
     @Prop({default: 'blue'}) color: string
 
+    nativeValue: string = ''
+
     @Watch('value', {immediate: true})
-    watchValue(value) {
+    __value(value) {
       this.nativeValue = value
     }
 
-    nativeValue: string = ''
+    bindItem(item) {
+      const {onClick} = this
+      return {value: item, onClick}
+    }
 
-    handelClick(value) {
+    onClick(value) {
       this.nativeValue = value
       this.$emit('input', value)
     }

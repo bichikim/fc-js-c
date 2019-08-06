@@ -1,23 +1,25 @@
 <template lang="pug">
   .div
-    q-btn.bg-white(
-      :label="stringQuotation"
-      :push="push"
-      dense
-      v-if="valueKind === 'string'"
-    )
-    q-btn-input(
-      :color="nativeValueColor"
-      :push="push"
-      :value="nativeValue"
-      @input="handleInput"
-    )
-    q-btn.bg-white(
-      :label="stringQuotation"
-      :push="push"
-      dense
-      v-if="valueKind === 'string'"
-    )
+    slot(name="quotation"  v-bind="bindQuotation" v-if="valueKind === 'string'")
+      q-btn.bg-white(
+        :label="stringQuotation"
+        :push="push"
+        dense
+      )
+    slot(name="default" v-bind="bindDefault")
+      q-btn-input(
+        :color="nativeValueColor"
+        :push="push"
+        :value="nativeValue"
+        @input="onInput"
+      )
+    slot(name="quotation" v-bind="bindQuotation" v-if="valueKind === 'string'")
+      q-btn.bg-white(
+        :class="[`bq-${stringQuotationColor}`]"
+        :label="stringQuotation"
+        :push="push"
+        dense
+      )
 </template>
 
 <script lang="ts">
@@ -34,14 +36,13 @@
   export default class QBtnValue extends Vue {
     @Prop() value: any
     @Prop({default: true}) push: boolean
-    @Prop({default: 'green'}) valueStringColor: string
-    @Prop({default: 'red'}) valueNumberColor: string
-    @Prop({default: 'blue'}) valueKeyColor: string
-    @Prop({default: 'black'}) stringQuotationColor: string
+    @Prop({default: 'green'}) stringColor: string
+    @Prop({default: 'red'}) numberColor: string
+    @Prop({default: 'blue'}) keyColor: string
+    @Prop({default: 'white'}) stringQuotationColor: string
     @Prop({default: '"'}) stringQuotation: '"' | '\''
     @Prop() backgroundColor: string
     @Prop() backgroundPush: string
-
 
     nativeValue: string | number | null = 'bar'
 
@@ -64,7 +65,17 @@
 
     @Watch('result', {immediate: true})
     __result(value) {
-      this.$emit('result', this.result)
+      this.$emit('result', value)
+    }
+
+    get bindQuotation() {
+      const {push, stringQuotation, stringQuotationColor} = this
+      return {push, value: stringQuotation, color: stringQuotationColor}
+    }
+
+    get bindDefault() {
+      const {push, nativeValue, nativeValueColor, onInput} = this
+      return {push, value: nativeValue, color: nativeValueColor, onInput}
     }
 
     get result() {
@@ -106,17 +117,17 @@
     get nativeValueColor() {
       switch(this.valueKind){
         case 'string':
-          return this.valueStringColor
+          return this.stringColor
         case 'number':
-          return this.valueNumberColor
+          return this.numberColor
         case 'boolean':
-          return this.valueKeyColor
+          return this.keyColor
         case 'null':
-          return this.valueKeyColor
+          return this.keyColor
         case 'undefined':
-          return this.valueKeyColor
+          return this.keyColor
         default:
-          return this.valueStringColor
+          return this.stringColor
       }
 
     }
@@ -131,7 +142,7 @@
       return typeof this.nativeValue
     }
 
-    handleInput(value) {
+    onInput(value) {
       this.nativeValue = value
     }
 

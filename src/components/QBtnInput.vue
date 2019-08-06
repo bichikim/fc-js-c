@@ -1,19 +1,20 @@
 <template lang="pug">
   q-btn(
+    :color="color"
+    :label="(nativeValue || placeHolder) | stringValue"
+    :push="push"
     no-caps
     v-bind="$attrs"
-    :push="push"
-    :label="nativeValue | stringValue"
-    :color="color"
   )
     q-popup-proxy(v-model="showPopup")
-      q-input(
-        dense
-        autofocus
-        v-model="nativeValue"
-        @change="handleInput"
-        @keyup.enter="handleEnter"
-      )
+      slot(name="input" v-bind="bindInput")
+        q-input(
+          @change="onChange($event.target.value)"
+          @keyup.enter="onEnter"
+          autofocus
+          dense
+          :value="nativeValue"
+        )
 </template>
 
 <script lang="ts">
@@ -35,18 +36,23 @@ import Vue from 'vue'
 })
 export default class QBtnInput extends Vue {
   @Prop() value: any
+  @Prop() placeHolder: string
   @Prop({default: 'green'}) color: string
   @Prop({default: true}) transformEmit: boolean
   @Prop() push: boolean
 
   showPopup: boolean = false
+  nativeValue: any = ''
 
   @Watch('value', {immediate: true})
-  watchValue(value) {
+  __value(value) {
     this.nativeValue = value
   }
 
-  nativeValue: any = ''
+  get bindInput() {
+    const {nativeValue, onChange, onEnter} = this
+    return {value: nativeValue, onChange, onEnter}
+  }
 
   get emitValue() {
     const {nativeValue} = this
@@ -65,11 +71,12 @@ export default class QBtnInput extends Vue {
     return nativeValue
   }
 
-  handleInput(value) {
+  onChange(value) {
+    this.nativeValue = value
     this.$emit('input', this.emitValue)
   }
 
-  handleEnter(){
+  onEnter(){
     this.showPopup = false
   }
 }

@@ -2,31 +2,41 @@
   .q-line-variable.q-btn-item(
     :class="{[`bg-${backgroundColor}`]: true, 'q-btn--push': backgroundPush}"
   )
-    q-btn-change.pad(
-      :color="kindColor"
-      :list="kindList"
-      :push="push"
-      v-if="nativeKind !== ''"
-      v-model="nativeKind"
-    )
-    q-btn-input.pad(:push ="push" :color="nameColor" v-model="nativeName")
-    q-btn-change.pad(:push="push" :color="operatorColor" :list="operatorList" v-model="nativeOperator")
-    q-btn-transformer(:list="['value', 'calculation']" select="value")
-      template(#value="{color, push}")
-        q-btn-value.pad(
-          :push="push"
-          @codify="handleCodify"
-          @result="handleResult"
-          v-bind="{valueStringColor, valueNumberColor, valueKeyColor, backgroundColor: color, backgroundPush: push}"
-          v-model="nativeValue"
-        )
-      template(#calculation="{color, push}")
-        q-btn-calculation(
-          :push="push"
-          @codify="handleCodify"
-          v-bind="{}"
-          v-model="nativeValue"
-        )
+    slot(name="kind" v-if="nativeKind !== ''" v-bind="bindKind")
+      q-btn-change.pad(
+        :color="kindColor"
+        :list="kindList"
+        :push="push"
+        v-model="nativeKind"
+      )
+    slot(name="name" v-bind="bindName")
+      q-btn-input.pad(:push ="push" :color="nameColor" v-model="nativeName")
+    slot(name="operator" v-bind="bindOperator")
+      q-btn-change.pad(:push="push" :color="operatorColor" :list="operatorList" v-model="nativeOperator")
+    slot(name="value" v-bind="bindValue")
+      q-btn-transformer(:list="['value', 'calculation', 'function']" select="value")
+        template(#select-value="{color, push}")
+          q-btn-value.pad(
+            :backgroundColor="color"
+            :backgroundPush="push"
+            :push="push"
+            @codify="onCodify"
+            @result="onResult"
+            v-bind="bindValue"
+            v-model="nativeValue"
+          )
+        template(#select-calculation="{color, push}")
+          q-btn-calculation(
+            :backgroundColor="color"
+            :backgroundPush="push"
+            :push="push"
+            @codify="onCodify"
+            @result="onResult"
+            v-bind="bindValue"
+            v-model="nativeValue"
+          )
+        template(#select-function="{color, push}")
+          q-btn(:push="push")
 </template>
 
 
@@ -124,12 +134,39 @@
 
     nativeValue: string | number | null = 'bar'
     nativeResult: string | number | null = null
-    nativeError?: string | null = null
+    // nativeError?: string | null = null
     nativeCode: CodeStyle[] | null = null
     nativeKind: VariableKind = 'const'
     nativeName: string = 'foo'
     nativeOperator: Operator = '='
+    valueTypeList: string[] = ['value', 'calculation']
 
+    get bindKind() {
+      const {kindColor, push, nativeKind, kindList} = this
+      return {color: kindColor, push, value: nativeKind, list: kindList}
+    }
+
+    get bindName() {
+      const {push, nameColor, nativeName} = this
+      return {push, color: nameColor, value: nativeName}
+    }
+
+    get bindOperator() {
+      const {push, operatorColor, operatorList, nativeOperator} = this
+      return {push, color: operatorColor, list: operatorList, value: nativeOperator}
+    }
+
+    get bindValue() {
+      const {
+        push, valueTypeList, valueStringColor, valueNumberColor,
+        valueKeyColor, onCodify, onResult,
+      } = this
+      return {
+        push, list: valueTypeList, stringColor: valueStringColor,
+        numberColor: valueNumberColor, keyColor: valueKeyColor,
+        onCodify, onResult,
+      }
+    }
 
     // noinspection JSMethodCanBeStatic
     get kindList(): VariableKind[] {
@@ -218,11 +255,11 @@
       return result
     }
 
-    handleCodify(payload) {
+    onCodify(payload) {
       this.nativeCode = payload
     }
 
-    handleResult(payload) {
+    onResult(payload) {
       this.nativeResult = payload
     }
   }
