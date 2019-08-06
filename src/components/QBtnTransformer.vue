@@ -1,6 +1,6 @@
 <template lang="pug">
   q-btn-group(:push="push" :class="{[`bg-${color}`]: true}")
-    .content
+    .content.q-btn-item(:class="{'q-btn--push': push}")
       slot(:name="select" :push="push" :color="color")
         span There's not a slot
     q-btn(:push="push" dense @click="open = !open" :color="color")
