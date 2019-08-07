@@ -1,9 +1,9 @@
 <template lang="pug">
-  q-btn-group(:push="push" :class="{[`bg-${color}`]: true}")
-    .content.q-btn-item(:class="{'q-btn--push': push}")
-      slot(:name="`select-${nativeSelect}`" v-bind="bindSelect")
+  q-btn-group(:push="push" :class="{[`bg-${color}`]: active, inactive: !active}")
+    .content(:class="{'q-btn--push': push && active}")
+      slot(:name="`select-${nativeValue}`" v-bind="bindSelect")
         span There's not a slot
-    q-btn(:push="push" dense @click="open = !open" :color="color")
+    q-btn(v-if="active" :push="push" dense @click="open = !open" :color="color")
       q-icon.transition(name="arrow_drop_down" :class="{open}")
       q-menu(v-model="open" no-parent-event)
         q-list
@@ -13,6 +13,19 @@
                 q-item-label
                   span {{item}}
 </template>
+
+
+<style lang="stylus" scoped>
+  .inactive
+    box-shadow unset
+
+  .open
+    transform rotate(180deg)
+
+  .transition
+    transition-property transform
+    transition-duration .3s
+</style>
 
 <script lang="ts">
   import {Component, Prop, Vue, Watch} from 'vue-property-decorator'
@@ -25,15 +38,16 @@
     @Prop({default: true}) push: boolean
     @Prop({default: () => ([])}) list: string[]
     @Prop({default: 'grey'}) color: string
-    @Prop({default: 'default'}) select: string
+    @Prop({default: 'default'}) value: string
+    @Prop({default: true}) active: boolean
 
-    @Watch('select', {immediate: true})
+    @Watch('value', {immediate: true})
     __select(value) {
-      this.nativeSelect = value
+      this.nativeValue = value
     }
 
-    @Watch('nativeSelect')
-    __nativeSelect(value) {
+    @Watch('nativeValue')
+    __nativeValue(value) {
       this.$emit('input', value)
     }
 
@@ -48,15 +62,7 @@
 
     open: boolean = false
 
-    nativeSelect: string = 'default'
+    nativeValue: string = 'default'
   }
 </script>
 
-<style lang="stylus" scoped>
-  .open
-    transform rotate(180deg)
-
-  .transition
-    transition-property transform
-    transition-duration .3s
-</style>

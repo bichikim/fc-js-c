@@ -4,12 +4,10 @@
       template(slot="unit") 변수
       template(slot="title") 어떻게 메모리에 저장 할까?
       .q-gutter-x-md
-        q-btn-change(push :list="['let', 'const']" color="blue" v-model="variableType")
-        q-btn-input(push color="cyan" v-model="variableName")
-        q-btn(push color="amber" :label="equal")
-        q-btn(dense push v-if="!isNumeric" label="\"")
-        q-btn-input(push :color="isNumeric ? 'red' : 'green'" v-model="value")
-        q-btn(dense push v-if="!isNumeric" label="\"")
+        q-line-variable(
+          :showTransformer="false"
+          v-bind="{kind: 'let', name: '상자', operator: '=', value: '공'}"
+          )
       template(slot="code") {{code}}
       template(slot="explanation") {{explanation}}
       .q-gutter-y-md(slot="reference")
@@ -72,9 +70,11 @@
   import QBtnChange from '@/components/QBtnChange.vue'
   import QBtnInput from '@/components/QBtnInput.vue'
   import QQuestion from '@/components/QQuestion.vue'
+  import QLineVariable from '@/components/QLineVariable.vue'
 
   @Component({
     components: {
+      QLineVariable,
       QQuestion,
       QBtnInput,
       QBtnChange,

@@ -14,7 +14,7 @@
     slot(name="operator" v-bind="bindOperator")
       q-btn-change.pad(:push="push" :color="operatorColor" :list="operatorList" v-model="nativeOperator")
     slot(name="value" v-bind="bindValue")
-      q-btn-transformer(:list="['value', 'calculation', 'function']" select="value")
+      q-btn-transformer(:list="['value', 'calculation', 'function']" v-model="nativeValueKind" :active="showTransformer")
         template(#select-value="{color, push}")
           q-btn-value.pad(
             :backgroundColor="color"
@@ -67,9 +67,7 @@
   import {CodeStyle, Memories, Result} from './types'
   import QBtnTransformer from '@/components/QBtnTransformer.vue'
   import QBtnCalculation from '@/components/QBtnCalculation.vue'
-
-  type VariableKind = 'const' | 'let' | ''
-  type Operator = '=' | '=+' | '=*' | '=/' | '=%' | '=-'
+  import {VariableKind, Operator, ValueKind} from './QLineVariable'
 
 
   @Component({
@@ -77,6 +75,7 @@
   })
   export default class QLineVariable extends Vue {
     @Prop({default: 'bar'}) value: any
+    @Prop({default: 'value'}) valueKind: ValueKind
     @Prop({default: true}) push: boolean
     @Prop({default: 'const'}) kind: VariableKind
     @Prop({default: 'foo'}) name: string
@@ -90,6 +89,7 @@
     @Prop({default: 'blue'}) valueKeyColor: string
     @Prop({default: 'white'}) backgroundColor: string
     @Prop({default: false}) backgroundPush: boolean
+    @Prop({default: true}) showTransformer: boolean
 
     @Watch('value', {immediate: true})
     __value(value) {
@@ -132,6 +132,11 @@
       })
     }
 
+    @Watch('valueKind', {immediate: true})
+    __valueKind(value) {
+      this.nativeValueKind = value
+    }
+
     nativeValue: string | number | null = 'bar'
     nativeResult: string | number | null = null
     // nativeError?: string | null = null
@@ -139,6 +144,7 @@
     nativeKind: VariableKind = 'const'
     nativeName: string = 'foo'
     nativeOperator: Operator = '='
+    nativeValueKind: ValueKind
     valueTypeList: string[] = ['value', 'calculation']
 
     get bindKind() {

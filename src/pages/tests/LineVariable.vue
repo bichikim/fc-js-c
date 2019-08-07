@@ -1,33 +1,6 @@
 <template lang="pug">
   div.q-pa-md
-    q-line-variable(
-      :previousMemories="{}"
-      @codify="updateCodeItem(0, $event)"
-      @memories="updateMemories(0, $event)"
-      )
-    q-code-line(:codes="codes[0]")
-    div {{getLineMemory(0)}}
-    q-line-variable(
-      :previousMemories="getLineMemory(0)"
-      :kind="''"
-      @codify="updateCodeItem(1, $event)"
-      @memories="updateMemories(1, $event)"
-      )
-    q-code-line(:codes="codes[1]")
-    div {{getLineMemory(1)}}
-    q-line-variable(
-      :previousMemories="getLineMemory(1)"
-      :kind="''"
-      @codify="updateCodeItem(2, $event)"
-      @memories="updateMemories(2, $event)"
-      )
-    q-code-line(:codes="codes[2]")
-    div {{getLineMemory(2)}}
-    q-btn-transformer(:list="['value', 'calculation']")
-      template(#value="{color, push}")
-        q-btn-input(:color="color" :push="push")
-      template(#calculation="{color, push}")
-        q-line-variable(:kind="''" :background-color="color" :background-push="push")
+    q-codes
 </template>
 
 <script lang="ts">
@@ -41,29 +14,38 @@ import QBtnTransformer from '@/components/QBtnTransformer.vue'
 import QBtnInput from '@/components/QBtnInput.vue'
 import uuid from 'uuid/v4'
 import QNothing from '@/components/QNothing.vue'
+import QCodes from '@/components/QCodes.vue'
 @Component({
-  components: {QNothing, QBtnInput, QBtnTransformer, QCodeLine, QLineVariable }
+  components: {QCodes, QNothing, QBtnInput, QBtnTransformer, QCodeLine, QLineVariable }
 })
 export default class LineVariablePage extends Vue {
   codes: CodeStyle[] = []
+  lineList: Memories[] = []
   timeLines: Memories[] = []
   update: string = 'init'
 
-  getLineMemory(index) {
-    const result = {}
-    for(let i = 0; i <= index; i++){
-      Object.assign(result, this.timeLines[i])
-    }
-    return result
-  }
-
   updateCodeItem(index, code){
-    this.codes[index] = code
-    this.codes = [...this.codes]
+    if(!code){
+      return
+    }
+    code.key = uuid()
+    this.codes.splice(index, 1, code)
   }
 
   updateMemories(index, lines) {
-    this.timeLines[index] = lines
+    this.lineList.splice(index, 1, lines)
+    const length = this.lineList.length
+    const {lineList} = this
+    let result
+    for(let i = 0; i <= index; i += 1) {
+      if(!result){
+        result = {...lineList[i]}
+      } else {
+        result = {...result, ...lineList[i]}
+      }
+    }
+    console.log(result)
+    // this.timeLines.splice(index, 1, result)
   }
 }
 </script>
