@@ -1,7 +1,6 @@
 <template lang="pug">
   q-page
     q-parallax
-
       template(#media)
         img(src="~assets/background.jpg")
       h1.text-white.banner.light.text-center Javascript Basic Course

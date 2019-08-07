@@ -4,9 +4,13 @@
       q-toolbar
         q-btn(flat round dense @click='leftDrawerOpen = !leftDrawerOpen' aria-label="menu")
           q-icon(name="ion-menu")
-        q-toolbar-title JS Basic
+        q-toolbar-title(@click="$router.push('/')") JS Basic
     q-drawer(v-model="leftDrawerOpen")
       q-list
+        q-item(to="/#")
+          q-item-section(avatar)
+            q-icon(name="ion-home")
+          q-item-section 홈
         q-expansion-item(icon="ion-snow" label="변수" :contentInsetLevel="contentInsetLevel")
           q-list
             q-item(to="/variable/variable")

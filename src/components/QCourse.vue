@@ -1,9 +1,10 @@
 <template lang="pug">
   q-card
     q-parallax(
-      src="https://cdn.pixabay.com/photo/2016/06/02/02/33/triangles-1430105_960_720.png"
       :height="150"
       )
+      template(#media)
+        img(src="~assets/background.jpg")
       h3.text-white.banner
         slot(name="title") unknown
     q-separator(v-if="$slots.default")
