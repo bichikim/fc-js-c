@@ -1,32 +1,39 @@
 <template lang="pug">
   .q-codes
-    q-btn-dropdown(label="new")
+    template(v-for="code in nativeCodes")
+      q-function(v-if="code.kind")
+      q-variable(v-else)
+    q-btn-dropdown(v-if="showNewBtn" label="new")
 </template>
 
 <script lang="ts">
 import {
   Component, Prop, Vue,
 } from 'vue-property-decorator'
-import {Operator, ValueKind, VariableKind} from './QLineVariable'
+import {Variable} from './QVariable'
 import QBtnChange from '@/components/QBtnChange.vue'
+import QVariable from '@/components/QVariable.vue'
+import QFunction from '@/components/QFunction.vue'
 
 
 
-interface LineValue {
-  value: any
-  kind: VariableKind
-  valueKind: ValueKind
-  name: string
-  operator: Operator
+
+type CodeKind = 'variable' | 'function' | 'if' | 'for'
+
+interface Code {
+  kind: CodeKind
+  structure: Variable
 }
 
+
 @Component({
-  components: {QBtnChange}
+  components: {QVariable, QBtnChange, QFunction}
 })
 export default class QCodes extends Vue {
-  @Prop() code: LineValue[]
+  @Prop() codes: Code[]
+  @Prop() showNewBtn: boolean
 
-  nativeCodes: LineValue[] = []
+  nativeCodes: Code[] = []
 }
 </script>
 

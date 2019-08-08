@@ -7,7 +7,7 @@
 import {
   Component, Prop, Vue,
 } from 'vue-property-decorator'
-import QLineVariable from '@/components/QLineVariable.vue'
+import QVariable from '@/components/QVariable.vue'
 import {CodeStyle, Memories} from '@/components/types'
 import QCodeLine from '@/components/QCodeLine.vue'
 import QBtnTransformer from '@/components/QBtnTransformer.vue'
@@ -16,7 +16,7 @@ import uuid from 'uuid/v4'
 import QNothing from '@/components/QNothing.vue'
 import QCodes from '@/components/QCodes.vue'
 @Component({
-  components: {QCodes, QNothing, QBtnInput, QBtnTransformer, QCodeLine, QLineVariable }
+  components: {QCodes, QNothing, QBtnInput, QBtnTransformer, QCodeLine, QVariable }
 })
 export default class LineVariablePage extends Vue {
   codes: CodeStyle[] = []

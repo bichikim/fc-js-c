@@ -4,7 +4,7 @@
       template(slot="unit") 변수
       template(slot="title") 어떻게 메모리에 저장 할까?
       .q-gutter-x-md
-        q-line-variable(
+        q-variable(
           :showTransformer="false"
           v-bind="{kind: 'let', name: '상자', operator: '=', value: '공'}"
           )
@@ -70,11 +70,11 @@
   import QBtnChange from '@/components/QBtnChange.vue'
   import QBtnInput from '@/components/QBtnInput.vue'
   import QQuestion from '@/components/QQuestion.vue'
-  import QLineVariable from '@/components/QLineVariable.vue'
+  import QVariable from '@/components/QVariable.vue'
 
   @Component({
     components: {
-      QLineVariable,
+      QVariable,
       QQuestion,
       QBtnInput,
       QBtnChange,

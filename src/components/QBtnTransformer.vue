@@ -7,7 +7,7 @@
       q-icon.transition(name="arrow_drop_down" :class="{open}")
       q-menu(v-model="open" no-parent-event)
         q-list
-          q-item(v-for="item in list" v-close-popup clickable @click="nativeSelect = item")
+          q-item(v-for="item in list" v-close-popup clickable @click="nativeSelect = item" :key="item")
             slot(name="item" v-bind="bindItem(item)")
               q-item-section
                 q-item-label

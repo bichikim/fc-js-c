@@ -67,13 +67,13 @@
   import {CodeStyle, Memories, Result} from './types'
   import QBtnTransformer from '@/components/QBtnTransformer.vue'
   import QBtnCalculation from '@/components/QBtnCalculation.vue'
-  import {VariableKind, Operator, ValueKind} from './QLineVariable'
+  import {VariableKind, Operator, ValueKind} from './QVariable'
 
 
   @Component({
     components: {QBtnCalculation, QBtnTransformer, QBtnChange, QBtnInput, QBtnValue}
   })
-  export default class QLineVariable extends Vue {
+  export default class QVariable extends Vue {
     @Prop({default: 'bar'}) value: any
     @Prop({default: 'value'}) valueKind: ValueKind
     @Prop({default: true}) push: boolean
