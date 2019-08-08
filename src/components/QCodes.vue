@@ -10,20 +10,10 @@
 import {
   Component, Prop, Vue,
 } from 'vue-property-decorator'
-import {Variable} from './QVariable'
+import {Code} from './QCodes'
 import QBtnChange from '@/components/QBtnChange.vue'
 import QVariable from '@/components/QVariable.vue'
 import QFunction from '@/components/QFunction.vue'
-
-
-
-
-type CodeKind = 'variable' | 'function' | 'if' | 'for'
-
-interface Code {
-  kind: CodeKind
-  structure: Variable
-}
 
 
 @Component({
