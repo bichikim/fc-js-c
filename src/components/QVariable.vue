@@ -20,20 +20,18 @@
             :backgroundColor="color"
             :backgroundPush="push"
             :push="push"
-            @codify="onCodify"
-            @result="onResult"
             v-bind="bindValue"
-            v-model="nativeValue"
+            :value="valueValue"
+            @input="nativeValue = $event"
           )
         template(#select-calculation="{color, push}")
-          q-btn-calculation(
+          q-calculation(
             :backgroundColor="color"
             :backgroundPush="push"
             :push="push"
-            @codify="onCodify"
-            @result="onResult"
             v-bind="bindValue"
-            v-model="nativeValue"
+            :value="calculationValue"
+            @input="nativeValue = $event"
           )
         template(#select-function="{color, push}")
           q-btn(:push="push")
@@ -66,12 +64,12 @@
   import QBtnValue from '@/components/QBtnValue.vue'
   import {CodeStyle, Memories, Result} from './types'
   import QBtnTransformer from '@/components/QBtnTransformer.vue'
-  import QBtnCalculation from '@/components/QBtnCalculation.vue'
-  import {VariableKind, Operator, ValueKind} from './QVariable'
+  import QCalculation from '@/components/QCalculation.vue'
+  import {VariableKind, Operator, ValueKind} from './_QVariable'
 
 
   @Component({
-    components: {QBtnCalculation, QBtnTransformer, QBtnChange, QBtnInput, QBtnValue}
+    components: {QCalculation, QBtnTransformer, QBtnChange, QBtnInput, QBtnValue}
   })
   export default class QVariable extends Vue {
     @Prop({default: 'bar'}) value: any
@@ -80,7 +78,6 @@
     @Prop({default: 'const'}) kind: VariableKind
     @Prop({default: 'foo'}) name: string
     @Prop({default: '='}) operator: Operator
-    @Prop({default: () => ({})}) previousMemories: Memories
     @Prop({default: 'blue'}) kindColor: string
     @Prop({default: 'cyan'}) nameColor: string
     @Prop({default: 'amber'}) operatorColor: string
@@ -94,20 +91,6 @@
     @Watch('value', {immediate: true})
     __value(value) {
       this.nativeValue = value
-    }
-
-    @Watch('nativeValue', {immediate: true})
-    __nativeValue(nativeValue) {
-      if(nativeValue !== this.value){
-        this.$emit('input', nativeValue)
-      }
-    }
-
-    @Watch('codify', {immediate: true})
-    __codify(value) {
-      this.$nextTick(() => {
-        this.$emit('codify', value)
-      })
     }
 
     @Watch('kind', {immediate: true})
@@ -125,27 +108,55 @@
       this.nativeOperator = value
     }
 
-    @Watch('memories', {immediate: true})
-    __memories(value) {
-      this.$nextTick(() => {
-        this.$emit('memories', value)
-      })
-    }
-
     @Watch('valueKind', {immediate: true})
     __valueKind(value) {
       this.nativeValueKind = value
     }
 
+    @Watch('variable')
+    __variable(value) {
+      this.$emit('change', value)
+    }
+
     nativeValue: string | number | null = 'bar'
-    nativeResult: string | number | null = null
     // nativeError?: string | null = null
-    nativeCode: CodeStyle[] | null = null
     nativeKind: VariableKind = 'const'
     nativeName: string = 'foo'
     nativeOperator: Operator = '='
-    nativeValueKind: ValueKind
+    nativeValueKind: ValueKind = 'value'
     valueTypeList: string[] = ['value', 'calculation']
+
+    get valueValue() {
+      const {nativeValue} = this
+      if(Array.isArray(nativeValue)) {
+        return nativeValue.join(' ')
+      }
+      if(typeof nativeValue === 'function') {
+        return String(nativeValue)
+      }
+      return nativeValue
+    }
+
+    get variable() {
+      const {nativeKind, nativeName, nativeOperator, nativeValue, nativeValueKind} = this
+      return {
+        kind: nativeKind,
+        name: nativeName,
+        operator: nativeOperator,
+        value: nativeValue,
+        valueKind: nativeValueKind}
+    }
+
+    get calculationValue() {
+      const {nativeValue} = this
+      if(Array.isArray(nativeValue)) {
+        return nativeValue
+      }
+      if(typeof nativeValue === 'function') {
+        return [String(nativeValue)]
+      }
+      return [nativeValue]
+    }
 
     get bindKind() {
       const {kindColor, push, nativeKind, kindList} = this
@@ -165,12 +176,11 @@
     get bindValue() {
       const {
         push, valueTypeList, valueStringColor, valueNumberColor,
-        valueKeyColor, onCodify, onResult,
+        valueKeyColor,
       } = this
       return {
         push, list: valueTypeList, stringColor: valueStringColor,
         numberColor: valueNumberColor, keyColor: valueKeyColor,
-        onCodify, onResult,
       }
     }
 
@@ -184,90 +194,6 @@
       return ['=', '=%', '=*', '=+', '=-', '=/']
     }
 
-    get previousResult(): Result | undefined {
-      return this.previousMemories[this.nativeName]
-    }
-
-    get error() {
-      const {previousResult, nativeKind, nativeName} = this
-      if(previousResult && previousResult.freeze && nativeKind === ''){
-        return `TypeError: invalid assignment to const ${nativeName}`
-      }
-      if(previousResult && nativeKind !== ''){
-        return `SyntaxError: Identifier '${nativeName}' has already been declared`
-      }
-      return undefined
-    }
-
-    get memories() {
-      return {
-        [this.nativeName]: this.result,
-      }
-    }
-
-    get resultValue() {
-      const {previousResult} = this
-      const nativeResult: any = this.nativeResult
-      const {value: myPreviousValue} = previousResult || {value: undefined}
-      switch(this.nativeOperator){
-        case '=':
-          return nativeResult
-        case '=+':
-          return myPreviousValue + nativeResult
-        case '=%':
-          return myPreviousValue % nativeResult
-        case '=/':
-          return myPreviousValue / nativeResult
-        case '=*':
-          return myPreviousValue * nativeResult
-        case '=-':
-          return myPreviousValue - nativeResult
-      }
-      return nativeResult
-    }
-
-    get result() {
-      const {nativeKind, resultValue} = this
-      return {
-        freeze: nativeKind === 'const',
-        value: resultValue
-      }
-    }
-
-    get codify(): CodeStyle[] {
-      const result: CodeStyle[] = []
-      const {
-        nativeKind, kindColor, nameColor, nativeName,
-        nativeOperator, operatorColor, nativeCode,
-      } = this
-      if(nativeKind !== ''){
-        result.push({
-          color: kindColor,
-          value: nativeKind
-        })
-      }
-      result.push({
-        color: nameColor,
-        value: nativeName
-      })
-      result.push({
-        color: operatorColor,
-        value: nativeOperator
-      })
-      if(nativeCode){
-        result.push(...nativeCode)
-      }
-
-      return result
-    }
-
-    onCodify(payload) {
-      this.nativeCode = payload
-    }
-
-    onResult(payload) {
-      this.nativeResult = payload
-    }
   }
 </script>
 

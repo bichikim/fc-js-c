@@ -1,4 +1,4 @@
-import {Variable} from './QVariable'
+import {Variable} from './_QVariable'
 
 export type CodeKind = 'variable' | 'function' | 'if' | 'for'
 

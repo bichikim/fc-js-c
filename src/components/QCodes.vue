@@ -10,7 +10,7 @@
 import {
   Component, Prop, Vue,
 } from 'vue-property-decorator'
-import {Code} from './QCodes'
+import {Code} from './_QCodes'
 import QBtnChange from '@/components/QBtnChange.vue'
 import QVariable from '@/components/QVariable.vue'
 import QFunction from '@/components/QFunction.vue'

@@ -1,5 +1,6 @@
 <template lang="pug">
   div.q-pa-md
+    q-variable(v-bind="codes[0].structure" @change="codes[0].structure = $event")
     q-codes
 </template>
 
@@ -9,17 +10,19 @@ import {
 } from 'vue-property-decorator'
 import QVariable from '@/components/QVariable.vue'
 import {CodeStyle, Memories} from '@/components/types'
-import QCodeLine from '@/components/QCodeLine.vue'
 import QBtnTransformer from '@/components/QBtnTransformer.vue'
 import QBtnInput from '@/components/QBtnInput.vue'
 import uuid from 'uuid/v4'
 import QNothing from '@/components/QNothing.vue'
 import QCodes from '@/components/QCodes.vue'
+import {Code} from '@/components/QCodes'
 @Component({
-  components: {QCodes, QNothing, QBtnInput, QBtnTransformer, QCodeLine, QVariable }
+  components: {QCodes, QNothing, QBtnInput, QBtnTransformer, QVariable }
 })
 export default class LineVariablePage extends Vue {
-  codes: CodeStyle[] = []
+  codes: Code[] = [
+    {kind: 'variable', structure: {kind: 'const', name: 'foo', operator: '=', value: ['foo', '+', 'bar'], valueKind: 'calculation'}}
+    ]
   lineList: Memories[] = []
   timeLines: Memories[] = []
   update: string = 'init'

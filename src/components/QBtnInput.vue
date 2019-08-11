@@ -1,20 +1,27 @@
 <template lang="pug">
-  q-btn(
-    :color="color"
-    :label="(nativeValue || placeHolder) | stringValue"
-    :push="push"
-    no-caps
-    v-bind="$attrs"
-  )
-    q-popup-proxy(v-model="showPopup")
-      slot(name="input" v-bind="bindInput")
-        q-input(
-          @change="onChange($event.target.value)"
-          @keyup.enter="onEnter"
-          autofocus
-          dense
-          :value="nativeValue"
-        )
+  q-btn-group(:push="push" @mouseover="nativeShowClose = true" @mouseleave="nativeShowClose = false")
+    q-btn(
+      :color="color"
+      :label="(nativeValue || placeHolder) | stringValue"
+      :push="push"
+      no-caps
+      v-bind="$attrs"
+    )
+      q-popup-proxy(v-model="nativeOpen")
+        slot(name="input" v-bind="bindInput")
+          q-input(
+            @change="onChange($event.target.value)"
+            @keyup.enter="onEnter"
+            autofocus
+            dense
+            :value="nativeValue"
+          )
+    q-btn(
+      v-if="close && nativeShowClose"
+      :push="push"
+      :color="closeColor"
+      icon="close"
+      dense @click="onClose")
 </template>
 
 <script lang="ts">
@@ -39,10 +46,13 @@ export default class QBtnInput extends Vue {
   @Prop() placeHolder: string
   @Prop({default: 'green'}) color: string
   @Prop({default: true}) transformEmit: boolean
+  @Prop({default: false}) close: boolean
+  @Prop({default: 'negative'}) closeColor?: string
   @Prop() push: boolean
 
-  showPopup: boolean = false
+  nativeOpen: boolean = false
   nativeValue: any = ''
+  nativeShowClose: boolean = false
 
   @Watch('value', {immediate: true})
   __value(value) {
@@ -75,9 +85,13 @@ export default class QBtnInput extends Vue {
     this.nativeValue = value
     this.$emit('input', this.emitValue)
   }
+  onClose() {
+    this.$emit('close')
+  }
 
   onEnter(){
-    this.showPopup = false
+    this.nativeOpen = false
+    this.$emit('change', this.nativeValue)
   }
 }
 </script>

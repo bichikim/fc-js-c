@@ -1,5 +1,5 @@
 <template lang="pug">
-  .div
+  .q-btn-value
     slot(name="quotation"  v-bind="bindQuotation" v-if="valueKind === 'string'")
       q-btn.bg-white(
         :label="stringQuotation"
@@ -10,7 +10,9 @@
       q-btn-input(
         :color="nativeValueColor"
         :push="push"
-        :value="nativeValue"
+        :value="String(nativeValue)"
+        :close="close"
+        @close="$emit('close')"
         @input="onInput"
       )
     slot(name="quotation" v-bind="bindQuotation" v-if="valueKind === 'string'")
@@ -27,6 +29,9 @@
     Component, Prop, Vue, Watch
   } from 'vue-property-decorator'
   import QBtnInput from '@/components/QBtnInput.vue'
+  import {getKind, getKindColor} from './_QBtnValue'
+
+
   import {CodeStyle} from './types'
 
 
@@ -41,31 +46,20 @@
     @Prop({default: 'blue'}) keyColor: string
     @Prop({default: 'white'}) stringQuotationColor: string
     @Prop({default: '"'}) stringQuotation: '"' | '\''
+    @Prop({default: false}) close: boolean
     @Prop() backgroundColor: string
     @Prop() backgroundPush: string
 
-    nativeValue: string | number | null = 'bar'
+    nativeValue: any = 'bar'
 
     @Watch('value', {immediate: true})
     __value(value) {
       this.nativeValue = value
     }
 
-    @Watch('nativeValue', {immediate: true})
-    __nativeValue(nativeValue) {
-      if(nativeValue !== this.value) {
-        this.$emit('input', nativeValue)
-      }
-    }
-
-    @Watch('codify', {immediate: true})
-    __codify(value) {
-      this.$emit('codify', value)
-    }
-
     @Watch('result', {immediate: true})
-    __result(value) {
-      this.$emit('result', value)
+    __nativeValue(nativeValue) {
+      this.$emit('input', this.result)
     }
 
     get bindQuotation() {
@@ -79,7 +73,8 @@
     }
 
     get result() {
-      switch(this.nativeValue){
+      const {nativeValue} = this
+      switch(nativeValue){
         case 'true':
           return true
         case 'false':
@@ -88,58 +83,38 @@
           return null
         case 'undefined':
           return undefined
-        default:
-          return this.nativeValue
+        case null:
+          return null
+        // no default
       }
-    }
 
 
-    get codify() {
-      const {valueKind, stringQuotationColor, stringQuotation} = this
-      const result: CodeStyle[] = []
-      result.push(
-        {
-          color: this.nativeValueColor,
-          value: String(this.nativeValue)
-        }
-      )
-      if(valueKind === 'string'){
-        const quotation = {
-          color: stringQuotationColor,
-          value: stringQuotation
-        }
-        result.push(quotation)
-        result.unshift(quotation)
+      if(typeof nativeValue === 'boolean' || !nativeValue){
+        return nativeValue
       }
-      return result
+
+      const numberValue = Number(nativeValue)
+
+      return Number.isNaN(numberValue) ? nativeValue : numberValue
     }
+
 
     get nativeValueColor() {
-      switch(this.valueKind){
-        case 'string':
-          return this.stringColor
+      const colorName = getKindColor(this.valueKind)
+      switch(colorName){
         case 'number':
           return this.numberColor
-        case 'boolean':
-          return this.keyColor
-        case 'null':
-          return this.keyColor
-        case 'undefined':
+        case 'string':
+          return this.stringColor
+        case 'key':
           return this.keyColor
         default:
-          return this.stringColor
+          return this.keyColor
       }
-
     }
 
     get valueKind() {
-      if(this.result === null){
-        return 'null'
-      }
-      if(this.result === undefined){
-        return 'undefined'
-      }
-      return typeof this.nativeValue
+      return getKind(this.result)
     }
 
     onInput(value) {
@@ -150,6 +125,6 @@
 </script>
 
 <style scoped lang="stylus">
-  .main
-    display flex
+  .q-btn-value
+    display inline-block
 </style>

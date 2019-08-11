@@ -1,18 +1,33 @@
 <template lang="pug">
   .q-btn-calculation(
   )
-    template(v-for="item in nativeCalculates")
+    template(v-for="(item, index) in nativeValue")
       slot(name="calculate" v-bind="bindCalculate")
-        q-btn-input.pad(:push="push" v-if="isValue(item)" :value="item")
-        q-btn-change.pad(:push="push" v-else :list="operators" :value="item")
+        q-btn-value.pad(
+          :push="push"
+          v-if="isValue(item)"
+          :value="item"
+          @input="changeValue(index, $event)"
+          :close="index === nativeValue.length - 1 && index !== 0"
+          @close="removeValue(index)"
+          )
+        q-btn-change.pad(
+          :push="push"
+          v-else
+          :list="operators"
+          :value="item"
+          @input="changeValue(index, $event)"
+          :close="index === nativeValue.length - 1"
+          @close="removeValue(index)"
+          )
     slot(name="add-operator-btn" v-if="!isLastValue")
-      q-btn-input.pad(dense :push="push" icon="ion-add" :color="addValueColor")
+      q-btn-input.pad(dense :push="push" icon="ion-add" :color="addValueColor" @change="addValue")
     slot(name="add-value-btn" v-else)
       q-btn.pad(dense :push="push" icon="ion-add" :color="addOperatorsColor")
         q-popup-proxy
           q-list
             template(v-for="operator in operators")
-              q-item(clickable v-close-popup @click="onAddOperator(operator)")
+              q-item(clickable v-close-popup @click="addValue(operator)")
                 q-item-section
                   q-item-label {{operator}}
 </template>
@@ -37,34 +52,40 @@
 <script lang="ts">
   import {Component, Prop, Vue, Watch} from 'vue-property-decorator'
   import {last} from 'lodash'
-  import QBtnInput from '@/components/QBtnInput.vue'
+  import QBtnValue from '@/components/QBtnValue.vue'
   import QBtnChange from '@/components/QBtnChange.vue'
+  import QBtnInput from '@/components/QBtnInput.vue'
+
 
 
 
   @Component({
     components: {
       QBtnChange,
+      QBtnValue,
       QBtnInput,
     }
   })
-  export default class QBtnCalculation extends Vue {
+  export default class QCalculation extends Vue {
     @Prop() push: boolean
-    @Prop() value: string
+    @Prop() value: string[]
     @Prop({default: 'green'}) valueStringColor: string
     @Prop({default: 'red'}) valueNumberColor: string
     @Prop({default: 'blue'}) valueKeyColor: string
     @Prop({default: 'blue'}) addOperatorsColor: string
     @Prop({default: 'green'}) addValueColor: string
 
-    nativeValue: string = ''
-    nativeCalculates: string[] = []
+    nativeValue: string[] = []
     operators: string[] = ['+', '-', '*', '/', '%', '||', '&&']
 
     @Watch('value', {immediate: true})
     __value(value) {
       this.nativeValue = value
-      this.nativeCalculates = this.nativeValue.split(' ')
+    }
+
+    @Watch('nativeValue')
+    __nativeValue(value) {
+      this.$emit('input', value)
     }
 
     isValue(value?: string): boolean {
@@ -79,11 +100,19 @@
     }
 
     get isLastValue() {
-      return this.isValue(last(this.nativeCalculates))
+      return this.isValue(last(this.nativeValue))
     }
 
-    onAddOperator(operator) {
-      this.nativeCalculates.push(operator)
+    removeValue(index) {
+      this.nativeValue.splice(index, 1)
+    }
+
+    changeValue(index, value){
+      this.nativeValue.splice(index, 1, value)
+    }
+
+    addValue(operator) {
+      this.nativeValue.push(operator)
     }
 
   }

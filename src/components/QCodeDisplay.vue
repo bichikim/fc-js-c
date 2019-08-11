@@ -16,7 +16,7 @@ import {
 import {CodeStyle} from './types'
 
 @Component
-export default class QCodeLine extends Vue {
+export default class QCodeDisplay extends Vue {
   @Prop() codes: CodeStyle[]
 
   bindDefault(item) {

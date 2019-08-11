@@ -1,5 +1,5 @@
 <template lang="pug">
-  .main
+
 </template>
 
 <script lang="ts">
@@ -13,6 +13,7 @@ import {Code} from './QCodes'
 @Component
 export default class QFunction extends Vue {
   @Prop({default: ''}) name: string
+  @Prop() functionThis: string
   @Prop({default: () => ([])}) codes: Code[]
   @Prop() parameters: any[]
 
