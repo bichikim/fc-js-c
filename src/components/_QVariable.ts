@@ -3,7 +3,7 @@ import {Calculation} from './_QCalculation'
 export type VariableKind = 'const' | 'let' | ''
 export type Operator = '=' | '=+' | '=*' | '=/' | '=%' | '=-'
 export type ValueKind = 'value' | 'calculation' | 'function'
-export interface Variable {
+export interface VariableInfo {
   value: any | Calculation
   kind: VariableKind
   valueKind: ValueKind

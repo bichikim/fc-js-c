@@ -7,7 +7,8 @@
         )
       q-variable(
         :key="code | key"
-        @change="onChange(index, code)"
+        @change="handelChange(index, {kind: 'variable', structure: $event, transformer: code.transformer})"
+        :showTransformer="code.transformer"
         v-bind="code.structure"
         v-else-if="code.kind === 'variable'"
       )
@@ -43,8 +44,11 @@ export default class QCodes extends Vue {
 
   nativeCodes: Code[] = []
 
-  onChange(index, value) {
+  handelChange(index, value) {
     this.nativeCodes.splice(index, 1, value)
+    this.$nextTick(() => {
+      this.$emit('change', this.nativeCodes)
+    })
   }
 }
 </script>

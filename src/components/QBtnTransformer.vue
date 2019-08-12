@@ -1,7 +1,7 @@
 <template lang="pug">
   q-btn-group(:push="push" :class="{[`bg-${color}`]: active, inactive: !active}")
     .content(:class="{'q-btn--push': push && active}")
-      slot(:name="`select-${nativeValue}`" v-bind="bindSelect")
+      slot(:name="`select-${$_.kebabCase(nativeValue)}`" v-bind="bindSelect")
         span There's not a slot
     q-btn(v-if="active" :push="push" dense @click="open = !open" :color="color")
       q-icon.transition(name="arrow_drop_down" :class="{open}")

@@ -31,7 +31,7 @@ export default class QCodesDisplay extends Vue {
   get codeStrings() {
     const codes =  this.codes.map((code) => {
       if(code.kind === 'variable'){
-        return stringify.variable(code.structure)
+        return stringify.variable(code.structure as any)
       }
     })
     return codes.join('\n')

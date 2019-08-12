@@ -1,15 +1,14 @@
 <template lang="pug">
   q-page.q-gutter-y-md(padding)
     q-course
-      template(slot="unit") 변수
-      template(slot="title") 어떻게 메모리에 저장 할까?
+      template(#unit) 변수
+      template(#title) 어떻게 메모리에 저장 할까?
       .q-gutter-x-md
-        q-variable(
-          :showTransformer="false"
-          v-bind="{kind: 'let', name: '상자', operator: '=', value: '공'}"
-          )
-      template(slot="code") {{code}}
-      template(slot="explanation") {{explanation}}
+        q-codes(:codes="[variable]" @change="variable = $event[0]")
+      template(slot="code")
+        q-codes-display(:codes="[variable]")
+      template(slot="explanation")
+        q-codes-explain(:codes="[variable]")
       .q-gutter-y-md(slot="reference")
         q-table(
           flat
@@ -71,9 +70,15 @@
   import QBtnInput from '@/components/QBtnInput.vue'
   import QQuestion from '@/components/QQuestion.vue'
   import QVariable from '@/components/QVariable.vue'
+  import QCodesDisplay from '@/components/QCodesDisplay.vue'
+  import QCodes from '@/components/QCodes.vue'
+  import QCodesExplain from '@/components/QCodesExplain.vue'
 
   @Component({
     components: {
+      QCodesExplain,
+      QCodes,
+      QCodesDisplay,
       QVariable,
       QQuestion,
       QBtnInput,
@@ -83,10 +88,7 @@
     },
   })
   export default class HowToSavePage extends Vue {
-    variableName: string = '상자'
-    variableType: string = 'let'
-    value: string = '공'
-    equal: string = '='
+    variable: any = {kind: 'variable', transformer: false, structure: {kind: 'let', name: '상자', operator: '=', value: '"공"', valueKind: 'value'}}
 
     referenceColumns = [
       {
@@ -133,23 +135,6 @@
         description: '저장할 값'
       }
     ]
-
-    get isNumeric(){
-      return !isNaN(Number(this.value))
-    }
-
-    get saveWay() {
-      return this.variableType === 'let' ? '변할 수 있는 값으로' : '변하지 않는 값으로'
-    }
-
-    get code(){
-      const quoted = this.isNumeric ? '' : '"'
-      return `${this.variableType } ${this.variableName} = ${quoted}${this.value}${quoted}`
-    }
-
-    get explanation(){
-      return `${this.variableName}에 ${this.value}을 ${this.saveWay} 저장 하라`
-    }
   }
 </script>
 <style lang="stylus">

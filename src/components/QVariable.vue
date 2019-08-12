@@ -65,7 +65,7 @@
   import {CodeStyle, Memories, Result} from './types'
   import QBtnTransformer from '@/components/QBtnTransformer.vue'
   import QCalculation from '@/components/QCalculation.vue'
-  import {VariableKind, Operator, ValueKind, Variable} from './_QVariable'
+  import {VariableKind, Operator, ValueKind, VariableInfo} from './_QVariable'
 
   @Component({
     components: {QCalculation, QBtnTransformer, QBtnChange, QBtnInput, QBtnValue}
@@ -80,10 +80,10 @@
     @Prop({default: 'blue'}) kindColor: string
     @Prop({default: 'cyan'}) nameColor: string
     @Prop({default: 'amber'}) operatorColor: string
-    @Prop({default: 'green'}) valueStringColor: string
-    @Prop({default: 'red'}) valueNumberColor: string
-    @Prop({default: 'blue'}) valueKeyColor: string
-    @Prop({default: 'cyan'}) valueVariableColor: string
+    @Prop({default: 'green'}) stringColor: string
+    @Prop({default: 'red'}) numberColor: string
+    @Prop({default: 'blue'}) keyColor: string
+    @Prop({default: 'cyan'}) variableColor: string
     @Prop({default: 'white'}) backgroundColor: string
     @Prop({default: false}) backgroundPush: boolean
     @Prop({default: true}) showTransformer: boolean
@@ -113,9 +113,11 @@
       this.nativeValueKind = value
     }
 
-    @Watch('variable')
+    @Watch('variable', {immediate: true})
     __variable(value) {
-      this.$emit('change', value)
+      this.$nextTick(() => {
+        this.$emit('change', value)
+      })
     }
 
     nativeValue: string | number | null = 'bar'
@@ -176,13 +178,13 @@
 
     get bindValue() {
       const {
-        push, valueTypeList, valueStringColor, valueNumberColor,
-        valueKeyColor, valueVariableColor,
+        push, valueTypeList, stringColor, numberColor,
+        keyColor, variableColor,
       } = this
       return {
-        push, list: valueTypeList, stringColor: valueStringColor,
-        numberColor: valueNumberColor, keyColor: valueKeyColor,
-        variableColor: valueVariableColor,
+        push, list: valueTypeList, stringColor,
+        numberColor, keyColor,
+        variableColor,
       }
     }
 

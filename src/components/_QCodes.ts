@@ -1,8 +1,10 @@
-import {Variable} from './_QVariable'
+import {VariableInfo} from './_QVariable'
+import {FunctionInfo} from './_QFunction'
 
 export type CodeKind = 'variable' | 'function' | 'if' | 'for'
 
 export interface Code {
   kind: CodeKind
-  structure: Variable
+  structure: VariableInfo | FunctionInfo
+  transformer?: boolean
 }

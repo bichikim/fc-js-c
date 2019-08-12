@@ -7,14 +7,15 @@ module.exports = function (ctx) {
   return {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
-    boot: ['i18n', 'axios', 'highlight'],
+    boot: ['i18n', 'axios', 'highlight', 'lodash'],
 
     css: ['app.styl'],
 
     extras: [
       'roboto-font',
       'material-icons', // optional, you are not bound to it
-      'ionicons-v4'
+      'ionicons-v4',
+
       // 'mdi-v3',
       // 'fontawesome-v5',
       // 'eva-icons'

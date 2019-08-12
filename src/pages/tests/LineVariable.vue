@@ -1,6 +1,6 @@
 <template lang="pug">
   div.q-pa-md
-    q-codes(:codes="codes" @change="codes = [...$event]")
+    q-codes(:codes="codes" @change="onChange")
     q-codes-display(:codes="codes")
 </template>
 
@@ -24,34 +24,15 @@ export default class LineVariablePage extends Vue {
   codes: Code[] = [
     {kind: 'variable', structure: {kind: 'const', name: 'foo', operator: '=', value: [10], valueKind: 'value'}},
     {kind: 'variable', structure: {kind: 'const', name: 'bar', operator: '=', value: [50], valueKind: 'value'}},
-    {kind: 'variable', structure: {kind: 'const', name: 'john', operator: '=', value: ['foo', '+', 'bar'], valueKind: 'calculation'}}
+    {kind: 'variable', structure: {kind: 'const', name: 'john', operator: '=', value: ['foo', '+', 'bar'], valueKind: 'calculation'}},
+    {kind: 'function', structure: {}},
     ]
   lineList: Memories[] = []
   timeLines: Memories[] = []
   update: string = 'init'
 
-  updateCodeItem(index, code){
-    if(!code){
-      return
-    }
-    code.key = uuid()
-    this.codes.splice(index, 1, code)
-  }
-
-  updateMemories(index, lines) {
-    this.lineList.splice(index, 1, lines)
-    const length = this.lineList.length
-    const {lineList} = this
-    let result
-    for(let i = 0; i <= index; i += 1) {
-      if(!result){
-        result = {...lineList[i]}
-      } else {
-        result = {...result, ...lineList[i]}
-      }
-    }
-    console.log(result)
-    // this.timeLines.splice(index, 1, result)
+  onChange(value) {
+    console.log(value)
   }
 }
 </script>

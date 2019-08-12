@@ -20,7 +20,8 @@
       v-if="close && nativeShowClose"
       :push="push"
       :color="closeColor"
-      icon="close"
+    label="x"
+    no-caps
       dense @click="onClose")
 </template>
 
@@ -57,6 +58,15 @@ export default class QBtnInput extends Vue {
   @Watch('value', {immediate: true})
   __value(value) {
     this.nativeValue = value
+  }
+
+  @Watch('nativeOpen')
+  __nativeOpen(value) {
+    if(value){
+      this.$emit('show')
+      return
+    }
+    this.$emit('hide')
   }
 
   get bindInput() {

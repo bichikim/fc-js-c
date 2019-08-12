@@ -5,7 +5,7 @@
       )
       template(#media)
         img(src="~assets/background.jpg")
-      h3.text-white.banner
+      h3.text-white.banner.text-light
         slot(name="title") unknown
     q-separator(v-if="$slots.default")
     q-card-section(v-if="$slots.default")
@@ -15,14 +15,7 @@
     q-separator(v-if="$slots.code")
     q-card-section(v-if="$slots.code")
       .text-subtitle1.text-grey-8 코드
-      prism-editor.text-h6(
-        :code="code.text"
-        :key="index"
-        :value="code.text"
-        language="js"
-        readonly
-        v-for="(code, index) in $slots.code"
-        )
+      slot(name="code")
     q-separator(v-if="$slots.explanation")
     q-card-section(v-if="$slots.explanation")
       .text-subtitle1.text-grey-8 의미
