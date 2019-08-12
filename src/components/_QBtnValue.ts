@@ -4,6 +4,8 @@ export const getKindColor = (kind: any) => {
       return 'string'
     case 'number':
       return 'number'
+    case 'variable':
+      return 'variable'
     default:
       return 'key'
   }

@@ -1,7 +1,7 @@
 <template lang="pug">
   div.q-pa-md
-    q-variable(v-bind="codes[0].structure" @change="codes[0].structure = $event")
-    q-codes
+    q-codes(:codes="codes" @change="codes = [...$event]")
+    q-codes-display(:codes="codes")
 </template>
 
 <script lang="ts">
@@ -15,13 +15,16 @@ import QBtnInput from '@/components/QBtnInput.vue'
 import uuid from 'uuid/v4'
 import QNothing from '@/components/QNothing.vue'
 import QCodes from '@/components/QCodes.vue'
-import {Code} from '@/components/QCodes'
+import {Code} from '@/components/_QCodes'
+import QCodesDisplay from '@/components/QCodesDisplay.vue'
 @Component({
-  components: {QCodes, QNothing, QBtnInput, QBtnTransformer, QVariable }
+  components: {QCodesDisplay, QCodes, QNothing, QBtnInput, QBtnTransformer, QVariable }
 })
 export default class LineVariablePage extends Vue {
   codes: Code[] = [
-    {kind: 'variable', structure: {kind: 'const', name: 'foo', operator: '=', value: ['foo', '+', 'bar'], valueKind: 'calculation'}}
+    {kind: 'variable', structure: {kind: 'const', name: 'foo', operator: '=', value: [10], valueKind: 'value'}},
+    {kind: 'variable', structure: {kind: 'const', name: 'bar', operator: '=', value: [50], valueKind: 'value'}},
+    {kind: 'variable', structure: {kind: 'const', name: 'john', operator: '=', value: ['foo', '+', 'bar'], valueKind: 'calculation'}}
     ]
   lineList: Memories[] = []
   timeLines: Memories[] = []

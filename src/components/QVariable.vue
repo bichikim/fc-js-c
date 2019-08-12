@@ -65,8 +65,7 @@
   import {CodeStyle, Memories, Result} from './types'
   import QBtnTransformer from '@/components/QBtnTransformer.vue'
   import QCalculation from '@/components/QCalculation.vue'
-  import {VariableKind, Operator, ValueKind} from './_QVariable'
-
+  import {VariableKind, Operator, ValueKind, Variable} from './_QVariable'
 
   @Component({
     components: {QCalculation, QBtnTransformer, QBtnChange, QBtnInput, QBtnValue}
@@ -84,6 +83,7 @@
     @Prop({default: 'green'}) valueStringColor: string
     @Prop({default: 'red'}) valueNumberColor: string
     @Prop({default: 'blue'}) valueKeyColor: string
+    @Prop({default: 'cyan'}) valueVariableColor: string
     @Prop({default: 'white'}) backgroundColor: string
     @Prop({default: false}) backgroundPush: boolean
     @Prop({default: true}) showTransformer: boolean
@@ -144,7 +144,8 @@
         name: nativeName,
         operator: nativeOperator,
         value: nativeValue,
-        valueKind: nativeValueKind}
+        valueKind: nativeValueKind
+      }
     }
 
     get calculationValue() {
@@ -176,11 +177,12 @@
     get bindValue() {
       const {
         push, valueTypeList, valueStringColor, valueNumberColor,
-        valueKeyColor,
+        valueKeyColor, valueVariableColor,
       } = this
       return {
         push, list: valueTypeList, stringColor: valueStringColor,
         numberColor: valueNumberColor, keyColor: valueKeyColor,
+        variableColor: valueVariableColor,
       }
     }
 

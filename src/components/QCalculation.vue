@@ -16,6 +16,7 @@
           v-else
           :list="operators"
           :value="item"
+          :color="operatorColor"
           @input="changeValue(index, $event)"
           :close="index === nativeValue.length - 1"
           @close="removeValue(index)"
@@ -73,6 +74,7 @@
     @Prop({default: 'red'}) valueNumberColor: string
     @Prop({default: 'blue'}) valueKeyColor: string
     @Prop({default: 'blue'}) addOperatorsColor: string
+    @Prop({default: 'amber'}) operatorColor: string
     @Prop({default: 'green'}) addValueColor: string
 
     nativeValue: string[] = []

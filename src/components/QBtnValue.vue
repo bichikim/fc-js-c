@@ -1,11 +1,5 @@
 <template lang="pug">
   .q-btn-value
-    slot(name="quotation"  v-bind="bindQuotation" v-if="valueKind === 'string'")
-      q-btn.bg-white(
-        :label="stringQuotation"
-        :push="push"
-        dense
-      )
     slot(name="default" v-bind="bindDefault")
       q-btn-input(
         :color="nativeValueColor"
@@ -14,13 +8,6 @@
         :close="close"
         @close="$emit('close')"
         @input="onInput"
-      )
-    slot(name="quotation" v-bind="bindQuotation" v-if="valueKind === 'string'")
-      q-btn.bg-white(
-        :class="[`bq-${stringQuotationColor}`]"
-        :label="stringQuotation"
-        :push="push"
-        dense
       )
 </template>
 
@@ -34,6 +21,7 @@
 
   import {CodeStyle} from './types'
 
+  const isStringValue = (value) => (/^".+"$/.test(value))
 
   @Component({
     components: {QBtnInput}
@@ -44,8 +32,7 @@
     @Prop({default: 'green'}) stringColor: string
     @Prop({default: 'red'}) numberColor: string
     @Prop({default: 'blue'}) keyColor: string
-    @Prop({default: 'white'}) stringQuotationColor: string
-    @Prop({default: '"'}) stringQuotation: '"' | '\''
+    @Prop({default: 'cyan'}) variableColor: string
     @Prop({default: false}) close: boolean
     @Prop() backgroundColor: string
     @Prop() backgroundPush: string
@@ -58,13 +45,8 @@
     }
 
     @Watch('result', {immediate: true})
-    __nativeValue(nativeValue) {
+    __result() {
       this.$emit('input', this.result)
-    }
-
-    get bindQuotation() {
-      const {push, stringQuotation, stringQuotationColor} = this
-      return {push, value: stringQuotation, color: stringQuotationColor}
     }
 
     get bindDefault() {
@@ -74,47 +56,60 @@
 
     get result() {
       const {nativeValue} = this
-      switch(nativeValue){
-        case 'true':
-          return true
-        case 'false':
-          return false
-        case 'null':
-          return null
-        case 'undefined':
-          return undefined
-        case null:
-          return null
-        // no default
+
+      if(nativeValue === 'true') {
+        return true
       }
 
+      if(nativeValue === 'false') {
+        return false
+      }
 
-      if(typeof nativeValue === 'boolean' || !nativeValue){
+      if(nativeValue === 'null') {
+        return null
+      }
+
+      if(typeof nativeValue === 'boolean'){
+        return nativeValue
+      }
+
+      if(!nativeValue){
         return nativeValue
       }
 
       const numberValue = Number(nativeValue)
 
-      return Number.isNaN(numberValue) ? nativeValue : numberValue
+      if(!Number.isNaN(numberValue)) {
+        return numberValue
+      }
+
+      return nativeValue
     }
 
 
     get nativeValueColor() {
-      const colorName = getKindColor(this.valueKind)
+      const colorName = this.valueKind
       switch(colorName){
         case 'number':
           return this.numberColor
         case 'string':
           return this.stringColor
-        case 'key':
-          return this.keyColor
+        case 'variable':
+          return this.variableColor
         default:
           return this.keyColor
       }
     }
 
     get valueKind() {
-      return getKind(this.result)
+      if(isStringValue(this.result)){
+        return 'string'
+      }
+      const kind = getKind(this.result)
+      if(kind === 'string'){
+        return 'variable'
+      }
+      return kind
     }
 
     onInput(value) {

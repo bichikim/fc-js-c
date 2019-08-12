@@ -1,6 +1,9 @@
 declare module '*.vue' {
   import Vue from 'vue'
-  export default Vue
+  interface Static {
+    [key: string]: any
+  }
+  export default Vue && Static
 }
 
 declare module '*.json'

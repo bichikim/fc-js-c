@@ -6,7 +6,7 @@
 import {
   Component, Prop, Vue,
 } from 'vue-property-decorator'
-import {Code} from './QCodes'
+import {Code} from './_QCodes'
 
 
 
