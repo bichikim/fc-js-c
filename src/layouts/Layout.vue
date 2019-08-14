@@ -17,20 +17,37 @@
               q-item-section(avatar)
                 q-icon(name="ion-snow")
               q-item-section 어떻게 메모리에 저장 할까?
+            q-item(to="/variable/change-memory")
+              q-item-section(avatar)
+                q-icon(name="ion-snow")
+              q-item-section 저장한 값을 변경하여 보자
             q-item(to="/variable/calculate")
               q-item-section(avatar)
                 q-icon(name="ion-snow")
               q-item-section 값을 계산하여 저장 하자
+            q-item(to="/variable/value-type")
+              q-item-section(avatar)
+                q-icon(name="ion-snow")
+              q-item-section 값에는 형식이 있다.
         q-expansion-item(icon="ion-snow" label="흐름 제어" :contentInsetLevel="contentInsetLevel")
           q-list
+            q-item(to="/flow/up-down")
+              q-item-section(avatar)
+                q-icon(name="ion-snow")
+              q-item-section 코드 기본 흐름
             q-item(to="/flow/if")
               q-item-section(avatar)
                 q-icon(name="ion-snow")
-              q-item-section 조건에 의한 흐름 제어 하기
+              q-item-section 코드 흐름 제어 하기
+            q-item(to="/flow/if")
+              q-item-section(avatar)
+                q-icon(name="ion-snow")
+              q-item-section 조건에 의한 흐름 제어
             q-item(to="/flow/loop")
               q-item-section(avatar)
                 q-icon(name="ion-snow")
               q-item-section 흐름 반복 하기
+
     q-page-container
       router-view
 </template>

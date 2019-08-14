@@ -31,7 +31,7 @@
         )
     q-question
       template(slot="title") 아래의 의미를 가지는 코드를 작성 하세요.
-      template(slot="explanation") 통장에 돈을 변할 수 있는 값으로 저장 한다.
+      template(slot="explanation") 통장에 변수 돈을 변할 수 있는 값으로 저장 한다.
 </template>
 
 <script lang="ts">

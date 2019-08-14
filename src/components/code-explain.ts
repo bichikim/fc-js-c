@@ -4,26 +4,26 @@ import {trim} from 'lodash'
 
 export const type = (value) => {
   if(/^".*"$/.test(value)){
-    return '문자'
+    return '문자 '
   }
   if(value === null){
     return '빈 값'
   }
   switch(typeof value){
     case 'bigint':
-      return '숫자'
+      return '숫자 '
     case 'boolean':
-      return '불린'
+      return '불린 '
     case 'function':
-      return '함수'
+      return '함수 '
     case 'number':
-      return '숫자'
+      return '숫자 '
     case 'object':
-      return '객체'
+      return '객체 '
     case 'string':
-      return '변수'
+      return '변수 '
     case 'symbol':
-      return '심볼'
+      return '심볼 '
     case 'undefined':
       return '정의 되지 않은 값'
   }
