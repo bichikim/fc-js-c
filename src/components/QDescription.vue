@@ -48,5 +48,7 @@ export default class QDescription extends Vue {
   .q-description
     background-color white
     color black
+    td:first-child
+      width 250px
 
 </style>
