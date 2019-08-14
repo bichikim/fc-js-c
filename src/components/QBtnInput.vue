@@ -16,6 +16,8 @@
             dense
             :value="nativeValue"
           )
+      q-tooltip(v-if="tooltip") {{tooltip}}
+      slot
     q-btn(
       v-if="close && nativeShowClose"
       :push="push"
@@ -23,6 +25,7 @@
     label="x"
     no-caps
       dense @click="onClose")
+
 </template>
 
 <script lang="ts">
@@ -50,6 +53,7 @@ export default class QBtnInput extends Vue {
   @Prop({default: false}) close: boolean
   @Prop({default: 'negative'}) closeColor?: string
   @Prop() push: boolean
+  @Prop() tooltip: string
 
   nativeOpen: boolean = false
   nativeValue: any = ''

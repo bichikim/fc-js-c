@@ -9,13 +9,10 @@
         slot(name="title") unknown
     q-separator(v-if="$slots.default")
     q-card-section(v-if="$slots.default")
-      .text-subtitle1.text-grey-8 구문
+      .text-subtitle1.text-grey-8 코드
       .text-h6.q-pa-md
         slot
     q-separator(v-if="$slots.code")
-    q-card-section(v-if="$slots.code")
-      .text-subtitle1.text-grey-8 코드
-      slot(name="code")
     q-separator(v-if="$slots.explanation")
     q-card-section(v-if="$slots.explanation")
       .text-subtitle1.text-grey-8 의미

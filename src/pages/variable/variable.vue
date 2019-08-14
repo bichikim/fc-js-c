@@ -10,49 +10,24 @@
       template(slot="explanation")
         q-codes-explain(:codes="[variable]")
       .q-gutter-y-md(slot="reference")
-        q-table(
-          flat
-          bordered
-          class="reference-variable-type"
+        q-description(
           title="선언 키워드"
-          hide-bottom
-          hide-header
-          :columns="referenceColumns"
-          :data="referenceVariableType"
-          row-key="name"
+          :row="referenceVariableType"
+          color="blue"
         )
-        q-table(
-          flat
-          bordered
-          class="reference-variable"
+        q-description(
           title="저장 별명"
-          hide-bottom
-          hide-header
-          :columns="referenceColumns"
-          :data="referenceVariable"
-          row-key="name"
+          :row="referenceVariable"
+          color="cyan"
         )
-        q-table(
-          flat
-          bordered
-          class="reference-equal"
+        q-description(
           title="대입 연산자"
-          hide-bottom
-          hide-header
-          :columns="referenceColumns"
-          :data="referenceEqual"
-          row-key="name"
+          :row="referenceEqual"
+          color="amber"
         )
-        q-table(
-          flat
-          bordered
-          :class="isNumeric ? 'reference-value-number' : 'reference-value-string'"
+        q-description(
           title="값"
-          hide-bottom
-          hide-header
-          :columns="referenceColumns"
-          :data="referenceValue"
-          row-key="name"
+          :row="referenceValue"
         )
     q-question
       template(slot="title") 아래의 의미를 가지는 코드를 작성 하세요.
@@ -73,9 +48,11 @@
   import QCodesDisplay from '@/components/QCodesDisplay.vue'
   import QCodes from '@/components/QCodes.vue'
   import QCodesExplain from '@/components/QCodesExplain.vue'
+  import QDescription from '@/components/QDescription.vue'
 
   @Component({
     components: {
+      QDescription,
       QCodesExplain,
       QCodes,
       QCodesDisplay,
@@ -117,7 +94,7 @@
     ]
     referenceVariable = [
       {
-        name: '*',
+        name: '글자 (키워드 값 X, 숫자로 시작 X)',
         description: '메모리 별명'
       }
     ]

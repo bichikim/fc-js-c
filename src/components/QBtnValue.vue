@@ -8,6 +8,7 @@
         :close="close"
         @close="$emit('close')"
         @input="onInput"
+        :tooltip="tooltip"
       )
 </template>
 
@@ -36,6 +37,7 @@
     @Prop({default: false}) close: boolean
     @Prop() backgroundColor: string
     @Prop() backgroundPush: string
+    @Prop() tooltip: string
 
     nativeValue: any = 'bar'
 
@@ -45,8 +47,8 @@
     }
 
     @Watch('result', {immediate: true})
-    __result() {
-      this.$emit('input', this.result)
+    __result(value) {
+      this.$emit('input',value)
     }
 
     get bindDefault() {
@@ -67,6 +69,11 @@
 
       if(nativeValue === 'null') {
         return null
+      }
+
+
+      if(nativeValue === 'undefined'){
+        return undefined
       }
 
       if(typeof nativeValue === 'boolean'){

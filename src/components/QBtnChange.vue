@@ -19,6 +19,8 @@
               )
                 q-item-section
                   q-item-label {{item}}
+      q-tooltip(v-if="tooltip") {{tooltip}}
+      slot
     q-btn(
       v-if="close && nativeShowClose"
       :push="push"
@@ -41,6 +43,7 @@
     @Prop({default: 'blue'}) color: string
     @Prop({default: false}) close: boolean
     @Prop({default: 'negative'}) closeColor?: string
+    @Prop() tooltip: string
 
     nativeValue: string = ''
     nativeShowClose: boolean = false

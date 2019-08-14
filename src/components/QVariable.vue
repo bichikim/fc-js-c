@@ -8,11 +8,12 @@
         :list="kindList"
         :push="push"
         v-model="nativeKind"
+        tooltip="저장 키워드"
       )
     slot(name="name" v-bind="bindName")
-      q-btn-input.pad(:push ="push" :color="nameColor" v-model="nativeName")
+      q-btn-input.pad(:push ="push" :color="nameColor" v-model="nativeName" tooltip="저장 별명")
     slot(name="operator" v-bind="bindOperator")
-      q-btn-change.pad(:push="push" :color="operatorColor" :list="operatorList" v-model="nativeOperator")
+      q-btn-change.pad(:push="push" :color="operatorColor" :list="operatorList" v-model="nativeOperator" tooltip="대입 연산자")
     slot(name="value" v-bind="bindValue")
       q-btn-transformer(:list="['value', 'calculation', 'function']" v-model="nativeValueKind" :active="showTransformer")
         template(#select-value="{color, push}")
@@ -23,6 +24,7 @@
             v-bind="bindValue"
             :value="valueValue"
             @input="nativeValue = $event"
+            tooltip="값"
           )
         template(#select-calculation="{color, push}")
           q-calculation(
@@ -32,6 +34,7 @@
             v-bind="bindValue"
             :value="calculationValue"
             @input="nativeValue = $event"
+            tooltip="수식"
           )
         template(#select-function="{color, push}")
           q-btn(:push="push")
@@ -71,7 +74,7 @@
     components: {QCalculation, QBtnTransformer, QBtnChange, QBtnInput, QBtnValue}
   })
   export default class QVariable extends Vue {
-    @Prop({default: 'bar'}) value: any
+    @Prop() value: any
     @Prop({default: 'value'}) valueKind: ValueKind
     @Prop({default: true}) push: boolean
     @Prop({default: 'const'}) kind: VariableKind
@@ -195,7 +198,10 @@
 
     // noinspection JSMethodCanBeStatic
     get operatorList(): Operator[] {
-      return ['=', '=%', '=*', '=+', '=-', '=/']
+      if(this.nativeKind === ''){
+        return ['=', '=%', '=*', '=+', '=-', '=/']
+      }
+      return ['=']
     }
 
   }
