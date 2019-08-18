@@ -54,6 +54,7 @@ export default class QBtnInput extends Vue {
   @Prop({default: 'negative'}) closeColor?: string
   @Prop() push: boolean
   @Prop() tooltip: string
+  @Prop({default: false}) initAfterChange: boolean
 
   nativeOpen: boolean = false
   nativeValue: any = ''
@@ -78,26 +79,9 @@ export default class QBtnInput extends Vue {
     return {value: nativeValue, onChange, onEnter}
   }
 
-  get emitValue() {
-    const {nativeValue} = this
-    if(this.transformEmit){
-      const mayNumber = Number(nativeValue)
-      if(!isNaN(mayNumber)) {
-        return mayNumber
-      }
-      if(nativeValue === 'true'){
-        return true
-      }
-      if(nativeValue === 'false'){
-        return false
-      }
-    }
-    return nativeValue
-  }
-
   onChange(value) {
     this.nativeValue = value
-    this.$emit('input', this.emitValue)
+    this.$emit('input', value)
   }
   onClose() {
     this.$emit('close')
@@ -106,6 +90,9 @@ export default class QBtnInput extends Vue {
   onEnter(){
     this.nativeOpen = false
     this.$emit('change', this.nativeValue)
+    if(this.initAfterChange) {
+      this.nativeValue = this.placeHolder
+    }
   }
 }
 </script>

@@ -6,19 +6,25 @@
       language="js"
       readonly
     )
-
+    error-pointer.pointer(
+      :line="2"
+      :column="4"
+    )
 </template>
 
 <script lang="ts">
 import {
   Component, Prop, Vue,
 } from 'vue-property-decorator'
-import {Code} from './_QCodes'
-import * as stringify from './code-stringify'
-
-
+import {CodeInfo} from './_QCodes'
+import {codes} from './code-stringify'
+import ErrorPointer from './ErrorPointer.vue'
+import {codes as resultCodes} from './code-runner'
 
 @Component({
+  components: {
+    ErrorPointer,
+  },
   filters: {
     key(value) {
       return JSON.stringify(value)
@@ -26,20 +32,19 @@ import * as stringify from './code-stringify'
   }
 })
 export default class QCodesDisplay extends Vue {
-  @Prop({default: () => ([])}) codes: Code[]
+  @Prop({default: () => ([])}) codes: CodeInfo[]
 
   get codeStrings() {
-    const codes =  this.codes.map((code) => {
-      if(code.kind === 'variable'){
-        return stringify.variable(code.structure as any)
-      }
-    })
-    return codes.join('\n')
+    return codes(this.codes)
   }
 }
 </script>
 
 <style scoped lang="stylus">
-  .main
-    display flex
+  .q-codes-display
+    position relative
+  .pointer
+    position absolute
+    left 0
+    top 0
 </style>

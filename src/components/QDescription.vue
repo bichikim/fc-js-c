@@ -9,7 +9,7 @@
     :class="{[`bg-${color}`]: true}"
     :table-class="$style['q-description']"
     row-key="name"
-    :data="[...row]"
+    :data="row"
   )
 </template>
 
@@ -21,7 +21,7 @@ import {
 @Component
 export default class QDescription extends Vue {
   @Prop() title: string
-  @Prop() row: Array<{name: string, description: string}> = []
+  @Prop() row: Array<{name: string, description: string}>
   @Prop({default: 'blue'}) color: string
 
   columns = [

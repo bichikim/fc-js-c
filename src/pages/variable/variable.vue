@@ -1,15 +1,17 @@
 <template lang="pug">
-  q-page.q-gutter-y-md(padding)
+  q-page(padding).q-gutter-y-md
     q-course
-      template(#unit) 변수
+      template(#unit) 값 저장하기
       template(#title) 어떻게 메모리에 저장 할까?
-      .q-gutter-x-md
+      template(#code-block)
         q-codes(:codes="[variable]" @change="variable = $event[0]")
-      template(slot="code")
+      template(#code)
         q-codes-display(:codes="[variable]")
-      template(slot="explanation")
+      template(#explanation)
         q-codes-explain(:codes="[variable]")
-      .q-gutter-y-md(slot="reference")
+      template(#result)
+        q-codes-result(:codes="[variable]" :watchers="['상자']")
+      template(#reference)
         q-description(
           title="선언 키워드"
           :row="referenceVariableType"
@@ -28,10 +30,22 @@
         q-description(
           title="값"
           :row="referenceValue"
+          color="green"
         )
     q-question
-      template(slot="title") 아래의 의미를 가지는 코드를 작성 하세요.
-      template(slot="explanation") 통장에 변수 돈을 변할 수 있는 값으로 저장 한다.
+      template(#title) 아래의 의미를 가지는 코드를 작성 하세요.
+      template(#explanation) 통장에 문자 10만원을 변할 수 있는 값으로 저장 하라
+    q-question
+      template(#title) 아래의 의미를 가지는 코드를 작성 하세요.
+      template(#explanation) 바구니에 숫자 10을 변하지 않는 값으로 저장 하라
+      template(#code-result="{code}")
+    q-question(code="const 집 =" :code-result="true")
+      template(#title) 아래의 코드에 값을 추가하여 아래의 결과를 출력하는 코드를 작성 하세요
+      template(#result)
+        q-chip 집: 가구
+      template(#code-result="{code}")
+        q-string-codes-result(:codes="code" :watchers="['집']")
+
 </template>
 
 <script lang="ts">
@@ -49,9 +63,13 @@
   import QCodes from '@/components/QCodes.vue'
   import QCodesExplain from '@/components/QCodesExplain.vue'
   import QDescription from '@/components/QDescription.vue'
+  import QCodesResult from '@/components/QCodesResult.vue'
+  import QStringCodesResult from '@/components/QStringCodesResult.vue'
 
   @Component({
     components: {
+      QStringCodesResult,
+      QCodesResult,
       QDescription,
       QCodesExplain,
       QCodes,
@@ -65,22 +83,8 @@
     },
   })
   export default class HowToSavePage extends Vue {
-    variable: any = {kind: 'variable', transformer: false, structure: {kind: 'let', name: '상자', operator: '=', value: '"공"', valueKind: 'value'}}
+    variable: any = {transformer: false, structure: {infoKey: 'variableInfo', kind: 'let', name: '상자', operator: '=', value: '"공"'}}
 
-    referenceColumns = [
-      {
-        name: 'name',
-        label: '표현',
-        align: 'left',
-        field: 'name',
-      },
-      {
-        name: 'description',
-        label: '설명',
-        align: 'left',
-        field: 'description',
-      }
-    ]
 
     referenceVariableType = [
       {

@@ -1,23 +1,43 @@
 <template lang="pug">
-  q-page.q-gutter-y-md(padding)
+  q-page(padding)
     q-course
-      template(slot="title") 조건에 의한 흐름 하기
+      template(#unit) 흐름 제어
+      template(#title) 조건에 의한 흐름 제어
+      template(#code-block)
+        q-codes(:codes="codes" @change="chodes = $evnet")
+      template(#code)
+        q-codes-display(:codes="codes")
+      template(#explanation)
+        q-codes-explain(:codes="codes")
+      template(#reference)
+        q-description
 </template>
 
 <script lang="ts">
-import {
-  Component, Prop, Vue,
-} from 'vue-property-decorator'
-import QCourse from '@/components/QCourse.vue'
+  import {
+    Component, Prop, Vue,
+  } from 'vue-property-decorator'
+  import QCodes from '@/components/QCodes.vue'
+  import QCourse from '@/components/QCourse.vue'
+  import {CodeInfo} from '@/components/_QCodes'
+  import QDescription from '@/components/QDescription.vue'
+  import QCodesDisplay from '@/components/QCodesDisplay.vue'
+  import QCodesExplain from '@/components/QCodesExplain.vue'
 
-@Component({
-  components: {
-    QCourse,
+
+
+
+  @Component({
+    components: {
+      QDescription,
+      QCodes, QCourse, QCodesDisplay, QCodesExplain
+    }
+  })
+  export default class IfPage extends Vue {
+    codes: CodeInfo[] = [
+
+    ]
   }
-})
-export default class IfPage extends Vue {
-
-}
 </script>
 
 <style scoped lang="stylus">

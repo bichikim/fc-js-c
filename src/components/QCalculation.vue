@@ -57,9 +57,6 @@
   import QBtnChange from '@/components/QBtnChange.vue'
   import QBtnInput from '@/components/QBtnInput.vue'
 
-
-
-
   @Component({
     components: {
       QBtnChange,

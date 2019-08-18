@@ -1,13 +1,19 @@
-import {Calculation} from './_QCalculation'
+import {CalculationInfo} from './_QCalculation'
+import {FunctionInfo} from './_QFunction'
+import {ReturnInfo} from './_QReturn'
+import {StructureInfo} from './_QCodes'
+
 
 export type VariableKind = 'const' | 'let' | ''
 export type Operator = '=' | '=+' | '=*' | '=/' | '=%' | '=-'
-export type ValueKind = 'value' | 'calculation' | 'function'
-export interface VariableInfo {
-  value: any | Calculation
+export type ValueKind = 'value' | 'calculationInfo' | 'functionInfo' | 'functionRunInfo'
+export interface VariableInfo extends StructureInfo {
+  infoKey: 'variableInfo'
+  value: Value
   kind: VariableKind
-  valueKind: ValueKind
   name: string
   operator: Operator
 }
 
+export type Value = string | undefined | null | boolean | number
+  | CalculationInfo | FunctionInfo

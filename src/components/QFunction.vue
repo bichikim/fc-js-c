@@ -14,7 +14,7 @@
           q-btn-input(:push="push")
         q-btn.pad(label=")" :push="push" :color="keyColor" no-caps dense)
         q-btn(label="{" :push="push" :color="keyColor" dense no-caps)
-        q-codes
+        q-codes-r(:codes="codes")
         br
         q-btn(label="}" :push="push" :color="keyColor" dense no-caps)
 </template>
@@ -39,18 +39,17 @@
 import {
   Component, Prop, Vue,
 } from 'vue-property-decorator'
-import {Code} from './_QCodes'
+import {CodeInfo} from './_QCodes'
 import QBtnTransformer from '@/components/QBtnTransformer.vue'
 import QBtnInput from '@/components/QBtnInput.vue'
-import QCodes from '@/components/QCodes.vue'
 @Component({
-  components: {QCodes, QBtnInput, QBtnTransformer}
+  components: {QCodesR: () => (import('@/components/QCodes.vue')), QBtnInput, QBtnTransformer}
 })
 export default class QFunction extends Vue {
   @Prop({default: ''}) name: string
   @Prop() functionThis: string
   @Prop({default: true}) push: boolean
-  @Prop({default: () => ([])}) codes: Code[]
+  @Prop({default: () => ([])}) codes: CodeInfo[]
   @Prop() parameters: any[]
   @Prop({default: 'blue'}) keyColor: string
 

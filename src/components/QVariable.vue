@@ -1,5 +1,5 @@
 <template lang="pug">
-  .q-line-variable.q-btn-item(
+  .q-variable.q-btn-item(
     :class="{[`bg-${backgroundColor}`]: true, 'q-btn--push': backgroundPush}"
   )
     slot(name="kind" v-if="nativeKind !== ''" v-bind="bindKind")
@@ -15,34 +15,34 @@
     slot(name="operator" v-bind="bindOperator")
       q-btn-change.pad(:push="push" :color="operatorColor" :list="operatorList" v-model="nativeOperator" tooltip="대입 연산자")
     slot(name="value" v-bind="bindValue")
-      q-btn-transformer(:list="['value', 'calculation', 'function']" v-model="nativeValueKind" :active="showTransformer")
+      q-btn-transformer(:list="valueTypeList" :value="valueKind" :active="showTransformer")
         template(#select-value="{color, push}")
           q-btn-value.pad(
             :backgroundColor="color"
             :backgroundPush="push"
             :push="push"
             v-bind="bindValue"
-            :value="valueValue"
+            :value="nativeValue"
             @input="nativeValue = $event"
             tooltip="값"
           )
-        template(#select-calculation="{color, push}")
+        template(#select-calculation-info="{color, push}")
           q-calculation(
             :backgroundColor="color"
             :backgroundPush="push"
             :push="push"
             v-bind="bindValue"
-            :value="calculationValue"
-            @input="nativeValue = $event"
+            :value="nativeValue.value"
+            @input="nativeValue.value = $event"
             tooltip="수식"
           )
-        template(#select-function="{color, push}")
+        template(#select-function-info="{color, push}")
           q-btn(:push="push")
 </template>
 
 
 <style lang="stylus" scoped>
-  .q-line-variable
+  .q-variable
     position relative
     box-sizing border-box
 
@@ -68,14 +68,13 @@
   import {CodeStyle, Memories, Result} from './types'
   import QBtnTransformer from '@/components/QBtnTransformer.vue'
   import QCalculation from '@/components/QCalculation.vue'
-  import {VariableKind, Operator, ValueKind, VariableInfo} from './_QVariable'
+  import {VariableKind, Operator, ValueKind, VariableInfo, Value} from './_QVariable'
 
   @Component({
     components: {QCalculation, QBtnTransformer, QBtnChange, QBtnInput, QBtnValue}
   })
   export default class QVariable extends Vue {
     @Prop() value: any
-    @Prop({default: 'value'}) valueKind: ValueKind
     @Prop({default: true}) push: boolean
     @Prop({default: 'const'}) kind: VariableKind
     @Prop({default: 'foo'}) name: string
@@ -111,11 +110,6 @@
       this.nativeOperator = value
     }
 
-    @Watch('valueKind', {immediate: true})
-    __valueKind(value) {
-      this.nativeValueKind = value
-    }
-
     @Watch('variable', {immediate: true})
     __variable(value) {
       this.$nextTick(() => {
@@ -123,45 +117,55 @@
       })
     }
 
-    nativeValue: string | number | null = 'bar'
+    nativeValue: Value = 'bar'
     // nativeError?: string | null = null
     nativeKind: VariableKind = 'const'
     nativeName: string = 'foo'
     nativeOperator: Operator = '='
-    nativeValueKind: ValueKind = 'value'
-    valueTypeList: string[] = ['value', 'calculation']
+    valueTypeList: string[] = ['value', 'calculationInfo', 'functionInfo']
 
-    get valueValue() {
+    get valueKind() {
       const {nativeValue} = this
-      if(Array.isArray(nativeValue)) {
-        return nativeValue.join(' ')
+      if(typeof nativeValue === 'object' && nativeValue !== null) {
+        return nativeValue.infoKey
+
       }
-      if(typeof nativeValue === 'function') {
-        return String(nativeValue)
+      return 'value'
+    }
+
+    set valueKind(value) {
+      if(value === 'value'){
+        if(typeof this.nativeValue === 'object' && this.nativeValue !== null) {
+          if(this.nativeValue.infoKey === 'calculationInfo'){
+            this.nativeValue = String(this.nativeValue.value.join(' '))
+            return
+          }
+          if(this.nativeValue.infoKey === 'functionInfo') {
+            this.nativeValue = this.nativeValue.name
+          }
+        }
+        return
       }
-      return nativeValue
+      if(typeof this.nativeValue === 'object' && this.nativeValue !== null) {
+        if(value === 'calculationInfo'){
+          this.nativeValue = {infoKey: value, value: []}
+          return
+        }
+        if(value === 'functionInfo') {
+          this.nativeValue = {infoKey: value, name: '', codes: [], kind: 'function', prams: []}
+        }
+      }
     }
 
     get variable() {
-      const {nativeKind, nativeName, nativeOperator, nativeValue, nativeValueKind} = this
+      const {nativeKind, nativeName, nativeOperator, nativeValue} = this
       return {
+        infoKey: 'variableInfo',
         kind: nativeKind,
         name: nativeName,
         operator: nativeOperator,
         value: nativeValue,
-        valueKind: nativeValueKind
       }
-    }
-
-    get calculationValue() {
-      const {nativeValue} = this
-      if(Array.isArray(nativeValue)) {
-        return nativeValue
-      }
-      if(typeof nativeValue === 'function') {
-        return [String(nativeValue)]
-      }
-      return [nativeValue]
     }
 
     get bindKind() {

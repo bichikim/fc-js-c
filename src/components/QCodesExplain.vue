@@ -1,26 +1,23 @@
 <template lang="pug">
   .q-codes-explain
-    span {{codeExplain}}
+    white-space(:content="codeExplain")
 </template>
 
 <script lang="ts">
 import {
   Component, Prop, Vue,
 } from 'vue-property-decorator'
-import * as explain from './code-explain'
-import {Code} from './_QCodes'
-
-@Component
+import {codes} from './code-explain'
+import {CodeInfo} from './_QCodes'
+import WhiteSpace from '@/components/WhiteSpace.vue'
+@Component({
+  components: {WhiteSpace}
+})
 export default class QCodesExplain extends Vue {
-  @Prop({default: () => ([])}) codes: Code[]
+  @Prop({default: () => ([])}) codes: CodeInfo[]
 
   get codeExplain() {
-    const lines = this.codes.map((code) => {
-      if(code.kind === 'variable'){
-        return explain.variable(code.structure as any)
-      }
-    })
-    return lines.join('\n')
+    return codes(this.codes)
   }
 }
 </script>
