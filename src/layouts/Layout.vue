@@ -13,18 +13,10 @@
           q-item-section 홈
         q-expansion-item(icon="ion-snow" label="Javascript 세상" :contentInsetLevel="contentInsetLevel")
           q-list
-            q-item(to="/javascript/server")
+            q-item(to="/intro/intro")
               q-item-section(avatar)
                 q-icon(name="ion-snow")
-              q-item-section 서버
-            q-item(to="/javascript/ai")
-              q-item-section(avatar)
-                q-icon(name="ion-snow")
-              q-item-section 인공지능
-            q-item(to="/javascript/app")
-              q-item-section(avatar)
-                q-icon(name="ion-snow")
-              q-item-section 웹 / 모바일 / 테스크탑
+              q-item-section Javascript 소개
         q-expansion-item(icon="ion-snow" label="프로그래밍" :contentInsetLevel="contentInsetLevel")
           q-list
             q-item(to="/programming/difference")

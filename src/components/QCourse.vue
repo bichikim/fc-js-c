@@ -31,6 +31,7 @@
       .text-subtitle1.text-grey-8 참고
       .q-gutter-y-md
         slot(name="reference")
+    slot
 </template>
 
 <script lang="ts">
